@@ -390,7 +390,7 @@ textarea.accin{font-size:11px;resize:none}
   <div id="lobby"></div>
   <div class="howto"><kbd>WASD</kbd>·<kbd>방향키</kbd>/화면 드래그 이동 · <kbd>J</kbd>/클릭 공격 · <kbd>Space</kbd> 대시 · <kbd>Q</kbd> 스킬1 · <kbd>F</kbd> 스킬2 · <kbd>R</kbd> 궁극기 · <kbd>E</kbd> 가젯 · 공격은 자동</div>
   <div class="best" id="best"></div>
-  <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:11px"><span style="opacity:.45">v4.1</span><input id="adminIn" type="password" placeholder="관리자 코드를 입력하세요" autocomplete="off" style="width:150px;padding:4px 8px;border-radius:3px;border:1px solid #2a3442;background:#0d141e;color:#fff;font-size:11px"><button id="adminBtn" class="btn ghost" style="padding:4px 10px;font-size:11px;min-height:0">확인</button></div>
+  <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:11px"><span style="opacity:.45">v4.2</span><input id="adminIn" type="password" placeholder="관리자 코드를 입력하세요" autocomplete="off" style="width:150px;padding:4px 8px;border-radius:3px;border:1px solid #2a3442;background:#0d141e;color:#fff;font-size:11px"><button id="adminBtn" class="btn ghost" style="padding:4px 10px;font-size:11px;min-height:0">확인</button></div>
 </div>
 
 <div id="levelup" class="screen dim hidden">
@@ -1981,7 +1981,7 @@ $('dashBtn').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropaga
 function pvCastMouse(slot){const me=pvMe();if(!me)return;if(isTouch){pvCast(slot,null,null);return}const wx=(mouse.x-W/2)/Z+PV.cam.x,wy=(mouse.y-H/2)/Z+PV.cam.y;const sh=skillShape(me.ch,slot,me);const R=sh.rg||sh.L||400;pvCast(slot,Math.atan2(wy-me.y,wx-me.x),Math.min(1,Math.hypot(wx-me.x,wy-me.y)/R))}
 function pvCast(slot,ang,mag){const me=pvMe();if(!me)return;me.castA=ang;me.castM=mag;try{slot==='q'?pvSkill(me):slot==='f'?pvSkill2(me):slot==='e'?pvGadget(me):pvUlt(me)}finally{me.castA=null;me.castM=null}}
 for(const [id,slot,fn] of [['skillBtn','q',()=>useSkill()],['sk2Btn','f',()=>useSkill2()],['ultBtn','r',()=>useUlt()],['gadBtn','e',()=>useGadget()]]){const el=$(id);
- el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(state!=='pvp'&&state!=='play'){fn();return}if(aim.id!==null)return;const r=el.getBoundingClientRect();aim.slot=slot;aim.el=el;aim.t0=performance.now();aim.auto=false;aim.id=e.pointerId;aim.ox=r.left+r.width/2;aim.oy=r.top+r.height/2;aim.x=e.clientX;aim.y=e.clientY;aim.R=Math.max(55,r.width*1.1);el.classList.add('aim');try{el.setPointerCapture(e.pointerId)}catch(_){}});
+ el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(state!=='pvp'&&state!=='play'){fn();return}if(aim.id!==null)return;const r=el.getBoundingClientRect();aim.slot=slot;aim.el=el;aim.t0=performance.now();aim.auto=false;aim.id=e.pointerId;aim.ox=e.clientX;aim.oy=e.clientY;aim.x=e.clientX;aim.y=e.clientY;aim.R=Math.max(55,r.width*1.1);el.classList.add('aim');try{el.setPointerCapture(e.pointerId)}catch(_){}});
  el.addEventListener('pointermove',e=>{if(e.pointerId!==aim.id)return;aim.x=e.clientX;aim.y=e.clientY});
  const end=(e,fire)=>{if(e.pointerId!==aim.id)return;aim.id=null;el.classList.remove('aim');const sl=aim.slot;aim.slot=null;if(!fire)return;const v=aimVec();const tap=v.l<aim.R*0.28;if(state==='pvp')pvCast(sl,tap?null:v.a,tap?null:v.m);else if(state==='play')sCast(sl,tap?null:v.a,tap?null:v.m)};
  el.addEventListener('pointerup',e=>end(e,true));el.addEventListener('pointercancel',e=>end(e,false))}
@@ -2002,7 +2002,7 @@ addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
 const mouse={x:0,y:0};
 const aim={id:null,ox:0,oy:0,x:0,y:0,R:60};
 function aimVec(){const dx=aim.x-aim.ox,dy=aim.y-aim.oy,l=Math.hypot(dx,dy);return{l,a:Math.atan2(dy,dx),m:Math.min(1,l/aim.R)}}
-$('atkBtn').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(state!=='pvp'||aim.id!==null)return;const r=$('atkBtn').getBoundingClientRect();aim.slot='atk';aim.t0=performance.now();aim.auto=false;aim.id=e.pointerId;aim.ox=r.left+r.width/2;aim.oy=r.top+r.height/2;aim.x=e.clientX;aim.y=e.clientY;aim.R=Math.max(50,r.width*0.9);$('atkBtn').classList.add('aim');try{$('atkBtn').setPointerCapture(e.pointerId)}catch(_){}});
+$('atkBtn').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(state!=='pvp'||aim.id!==null)return;const r=$('atkBtn').getBoundingClientRect();aim.slot='atk';aim.t0=performance.now();aim.auto=false;aim.id=e.pointerId;aim.ox=e.clientX;aim.oy=e.clientY;aim.x=e.clientX;aim.y=e.clientY;aim.R=Math.max(50,r.width*0.9);$('atkBtn').classList.add('aim');try{$('atkBtn').setPointerCapture(e.pointerId)}catch(_){}});
 $('atkBtn').addEventListener('pointermove',e=>{if(e.pointerId!==aim.id)return;aim.x=e.clientX;aim.y=e.clientY});
 const endAim=(e,fire)=>{if(e.pointerId!==aim.id)return;aim.id=null;aim.slot=null;$('atkBtn').classList.remove('aim');if(!fire||state!=='pvp')return;const v=aimVec();const me=pvMe();if(!me)return;if(v.l<aim.R*0.28){if(!aim.auto)pvShoot(me,null)}else pvShoot(me,v.a,v.m)};
 $('atkBtn').addEventListener('pointerup',e=>endAim(e,true));$('atkBtn').addEventListener('pointercancel',e=>endAim(e,false));
@@ -2234,8 +2234,21 @@ const PV_SELF=new Set(['nova','hammer','aura']),PV_POINT=new Set(['lightning','p
 function pvSI(w,s){return w==='orbit'||w==='aura'?1.0:clamp(s.cd||1,0.55,1.4)}
 function foeInCone(f,ang,cone,R){let best=null,bd=1e18;for(const o of pvAll()){if(o===f||!o.alive||o.gone||!pvHostile(f.id,o)||(o.npc&&!pvVuln(o))||!pvSeen(f,o))continue;const dx=o.x-f.x,dy=o.y-f.y,d=dx*dx+dy*dy;if(d>R*R)continue;const da=Math.abs(((Math.atan2(dy,dx)-ang+Math.PI)%TAU+TAU)%TAU-Math.PI);if(da>cone)continue;if(d<bd){bd=d;best=o}}return best}
 const PROJ_LEAD={bolt:0.15,kunai:680,boomer:520,saw:480,shotgun:700,sniper:1100,flame:380,drone:620,orbit:480,beam:-0.22,lightning:-0.35,poison:-0.2,tornado:-0.3};
-function pvAutoAim(f){const W=wb(f.w);const s=WDEF[f.w].L[pvLevel()-1];const R=pvWRange(W,s);const t=nearestFoe(f,R*1.25,true)||nearestFoe(f,R*1.25)||nearestFoe(f,720,true)||nearestFoe(f,720);if(!t)return null;
- const d=Math.hypot(t.x-f.x,t.y-f.y);const L=PROJ_LEAD[W];let lead=0;if(!PV_SELF.has(W)&&L!=null)lead=L<0?-L:L<1?L:Math.min(0.35,d/L);
+function segBlocked(x1,y1,x2,y2){const P0=ARENA.pillars;if(!P0)return false;const dx=x2-x1,dy=y2-y1,L2=dx*dx+dy*dy||1;for(const p of P0){const u=clamp(((p[0]-x1)*dx+(p[1]-y1)*dy)/L2,0,1);const qx=x1+dx*u-p[0],qy=y1+dy*u-p[1];if(qx*qx+qy*qy<(p[2]*0.92)**2)return true}return false}
+/* smart target pick: nearest enemy in range first (Brawl quick-fire), small hero preference, sticky target, wall check */
+function pvSmartTarget(f,R,o={}){let best=null,bs=1e18;const now=PV.t,proj=o.proj!==false,maxD=R*(o.over||1.6);
+ for(const v of pvAll()){if(v===f||!v.alive||v.gone||!pvHostile(f.id,v))continue;if(v.npc&&(o.heroOnly||!pvVuln(v)))continue;if(!v.npc&&!pvSeen(f,v))continue;
+  let d=Math.hypot(v.x-f.x,v.y-f.y);if(v.stealthT>0&&d>100)continue;if(v.npc)d=Math.max(0,d-v.r0+14);if(d>maxD)continue;
+  let sc=d;if(d>R*1.06)sc+=2000;
+  if(!v.npc)sc*=0.82;else if(v.kind==='tower'||v.kind==='guard'||v.kind==='nexus')sc*=1.12;
+  sc*=0.94+0.06*clamp(v.hp/(v.maxHp||1),0,1);
+  if(proj&&segBlocked(f.x,f.y,v.x,v.y))sc*=1.6;
+  if(f.lockT===v.id&&now-(f.lockAt||-9)<1.2)sc*=0.9;
+  if(sc<bs){bs=sc;best=v}}
+ if(best){f.lockT=best.id;f.lockAt=now}return best}
+function pvAutoAim(f){const W=wb(f.w);const s=WDEF[f.w].L[pvLevel()-1];const R=pvWRange(W,s);const melee=PV_SELF.has(W);const t=pvSmartTarget(f,R,{proj:!melee,over:melee?1.4:1.7});if(!t)return null;
+ const d=Math.hypot(t.x-f.x,t.y-f.y);const L=PROJ_LEAD[W];let lead=0;if(!melee&&L!=null)lead=(L<0?-L:L<1?L:Math.min(0.35,d/L))*0.55;
+ const sp=Math.hypot(t.vx||0,t.vy||0);if(sp<40)lead=0;
  const tx=t.x+(t.vx||0)*lead,ty=t.y+(t.vy||0)*lead;return{a:Math.atan2(ty-f.y,tx-f.x),m:Math.min(1,Math.hypot(tx-f.x,ty-f.y)/R),t}}
 function pvShoot(f,ang,mag){if(!f||!f.alive||PV.phase!=='fight'||f.ammo<1||f.fireGap>0||f.frozenT>0)return false;
  const lv=pvLevel();f.wl=lv;f.mm=pvMight(f);const w=wb(f.w);const s=WDEF[f.w].L[lv-1];const R=pvWRange(w,s);PV.curTc=WDEF[f.w].tc||null;
@@ -2334,9 +2347,9 @@ function pvUlt(f){if(!f||!f.alive||PV.phase!=='fight'||!f.ch.ult)return;const u=
 function pvGadget(f){if(!f||!f.alive||f.gadCd>0||PV.phase!=='fight'||!f.gad)return;f.gadCd=f.gad.cd*(f.cdMul||1);if(f.id===PV.myId){sfx.skill()}pvGx(f,f.gad.fx)}
 
 /* ---- non-target (skillshot) aiming: f.castA/f.castM set while casting an aimed skill ---- */
-function pvAimA(f,R){if(f.castA!=null)return f.castA;const t=nearestFoe(f,R);return t?Math.atan2(t.y-f.y,t.x-f.x):f.face}
-function pvAimT(f,R,cone,heroOnly){if(f.castA!=null)return foeInCone(f,f.castA,cone||0.3,R);return nearestFoe(f,R,heroOnly)}
-function pvAimP(f,R){if(f.castA!=null){const d=R*(f.castM==null?0.8:clamp(f.castM,0.1,1));return[clamp(f.x+Math.cos(f.castA)*d,-ARENA.hw,ARENA.hw),clamp(f.y+Math.sin(f.castA)*d,-ARENA.hh,ARENA.hh)]}const t=nearestFoe(f,R);return t?[t.x,t.y]:[f.x+Math.cos(f.face)*R*0.6,f.y+Math.sin(f.face)*R*0.6]}
+function pvAimA(f,R){if(f.castA!=null)return f.castA;const t=pvSmartTarget(f,R,{proj:false,over:1.2});return t?Math.atan2(t.y-f.y,t.x-f.x):f.face}
+function pvAimT(f,R,cone,heroOnly){if(f.castA!=null)return foeInCone(f,f.castA,cone||0.3,R);const t=pvSmartTarget(f,R,{proj:false,over:1,heroOnly});return t&&Math.hypot(t.x-f.x,t.y-f.y)-(t.npc?t.r0:0)<=R?t:null}
+function pvAimP(f,R){if(f.castA!=null){const d=R*(f.castM==null?0.8:clamp(f.castM,0.1,1));return[clamp(f.x+Math.cos(f.castA)*d,-ARENA.hw,ARENA.hw),clamp(f.y+Math.sin(f.castA)*d,-ARENA.hh,ARENA.hh)]}const t=pvSmartTarget(f,R,{proj:false,over:1.1});return t?[t.x,t.y]:[f.x+Math.cos(f.face)*R*0.6,f.y+Math.sin(f.face)*R*0.6]}
 function inCone(f,v){if(f.castA==null)return true;const da=Math.abs(((Math.atan2(v.y-f.y,v.x-f.x)-f.castA+Math.PI)%TAU+TAU)%TAU-Math.PI);return da<0.5}
 function pvGx(f,list,ult,dm=1){const m=pvMight(f)*dm;const tgt=nearestFoe(f,600);for(const [k,o] of list){switch(k){
  case 'slam':{const a=pvAimA(f,o.L?o.L+60:(o.R||150)*2.2);f.face=a;const ca=Math.cos(a),sa=Math.sin(a),dmg=o.dmg*0.3*m,sw=(o.sweet||1)-1;
@@ -2878,7 +2891,9 @@ function drawShape(me,sh,ang,m){ctx.save();ctx.fillStyle='rgba(70,200,225,.16)';
  else if(sh.t==='cone'){const c=(sh.arc||1)/2;ctx.translate(me.x,me.y);ctx.rotate(ang);ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,sh.rg,-c,c);ctx.closePath();ctx.fill();ctx.stroke()}
  else{ctx.translate(me.x,me.y);ctx.rotate(ang);ctx.beginPath();ctx.rect(10,-sh.w/2,sh.L-10,sh.w);ctx.fill();ctx.stroke()}
  ctx.restore()}
-function pvDrawAim(me,t){let ang=null,m=0.75;if(aim.id!==null&&aim.slot&&aim.slot!=='atk'){const v=aimVec();const sh=skillShape(me.ch,aim.slot,me);if(v.l<aim.R*0.28){const sR=sh.rg||sh.L||400;const au=nearestFoe(me,sR*1.2);ang=au?Math.atan2(au.y-me.y,au.x-me.x):me.face;m=au?Math.min(1,Math.hypot(au.x-me.x,au.y-me.y)/sR):0.7}else{ang=v.a;m=v.m}drawShape(me,sh,ang,m);return}
+function drawReticle(v,t){const r=(v.npc?v.r0:16)+9;ctx.save();ctx.translate(v.x,v.y);ctx.rotate(Math.sin(t*3)*0.12);ctx.strokeStyle='rgba(255,80,80,.9)';ctx.lineWidth=2.5;for(let i=0;i<4;i++){ctx.rotate(Math.PI/2);ctx.beginPath();ctx.moveTo(r,r-7);ctx.lineTo(r,r);ctx.lineTo(r-7,r);ctx.stroke()}ctx.restore()}
+function pvDrawAim(me,t){let ang=null,m=0.75;
+ if(isTouch&&me.alive&&PV.phase==='fight'&&(aim.id===null||aim.slot==='atk')){PV.atT=(PV.atT||0)-0.016;if(PV.atT<=0||!PV.atg||!PV.atg.alive){PV.atT=0.15;const au=pvAutoAim(me);PV.atg=au?au.t:null}const tg=PV.atg;if(tg&&tg.alive&&!(aim.id!==null&&aimVec().l>=aim.R*0.28))drawReticle(tg,t)}if(aim.id!==null&&aim.slot&&aim.slot!=='atk'){const v=aimVec();const sh=skillShape(me.ch,aim.slot,me);if(v.l<aim.R*0.28){const sR=sh.rg||sh.L||400;const au=pvSmartTarget(me,sR,{proj:false,over:1.2});ang=au?Math.atan2(au.y-me.y,au.x-me.x):me.face;m=au?Math.min(1,Math.hypot(au.x-me.x,au.y-me.y)/sR):0.7}else{ang=v.a;m=v.m}drawShape(me,sh,ang,m);return}
  if(aim.id!==null){const v=aimVec();if(v.l<aim.R*0.28){const au=pvAutoAim(me);if(!au)return;ang=au.a;m=au.m}else{ang=v.a;m=v.m}}
  else if(!isTouch&&state==='pvp'){const wx=(mouse.x-W/2)/Z+PV.cam.x,wy=(mouse.y-H/2)/Z+PV.cam.y;ang=Math.atan2(wy-me.y,wx-me.x);m=Math.min(1,Math.hypot(wx-me.x,wy-me.y)/pvWRange(wb(me.w),WDEF[me.w].L[pvLevel()-1]))}
  if(ang==null||!me.alive)return;const s=WDEF[me.w].L[pvLevel()-1],R=pvWRange(wb(me.w),s),w=me.w;const ok=me.ammo>=1;ctx.save();ctx.globalAlpha=ok?1:0.45;
@@ -2908,7 +2923,7 @@ function frame(now){requestAnimationFrame(frame);const raw=(now-last)/1000;const
  if(state==='title')drawPreviews(now/1000)}
 resize();buildSprites();buildBg();buildTitle();renderLB();requestAnimationFrame(frame);
 Net.init();
-if(location.protocol==='file:'||location.hostname==='localhost')window.__nf={drawHero,CH,pvShoot,aim,get drawWorld(){return drawWorld},useSkill2,useUlt,pvSkill2,pvUlt,pvRender,render,CHS:CHARS.map(c=>c.id),pvUpdate,pvBotMoba,pvBot,pvEnd,useGadget,PV,pvMe,pvDash,pvSkill,pvStartPractice,pvJoin,pvRequestStart,joy,tryDash,useSkill,Net,get G(){return G},get P(){return P},get state(){return state},startGame,choose,update,set sel(v){selChar=v},set diff(v){selDiff=v},showEnd,unlockAll(){PROG.kills=1e6;PROG.boss=99;PROG.time=9999}};
+if(location.protocol==='file:'||location.hostname==='localhost')window.__nf={aim2:f=>{const a=pvAutoAim(f);return a?a.t:null},drawHero,CH,pvShoot,aim,get drawWorld(){return drawWorld},useSkill2,useUlt,pvSkill2,pvUlt,pvRender,render,CHS:CHARS.map(c=>c.id),pvUpdate,pvBotMoba,pvBot,pvEnd,useGadget,PV,pvMe,pvDash,pvSkill,pvStartPractice,pvJoin,pvRequestStart,joy,tryDash,useSkill,Net,get G(){return G},get P(){return P},get state(){return state},startGame,choose,update,set sel(v){selChar=v},set diff(v){selDiff=v},showEnd,unlockAll(){PROG.kills=1e6;PROG.boss=99;PROG.time=9999}};
 </script>
 </body>
 </html>
