@@ -282,7 +282,7 @@ button{font-family:inherit;color:inherit}
   <div id="lobby"></div>
   <div class="howto"><kbd>WASD</kbd>·<kbd>방향키</kbd>/화면 드래그 이동 · <kbd>J</kbd>/클릭 공격 · <kbd>Space</kbd> 대시 · <kbd>Q</kbd> 스킬1 · <kbd>F</kbd> 스킬2 · <kbd>R</kbd> 궁극기 · <kbd>E</kbd> 가젯 · 공격은 자동</div>
   <div class="best" id="best"></div>
-  <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:11px"><span style="opacity:.45">v2.9 · 논타겟 스킬 · 전용 무기 · 롤 패시브 · 카게로</span><input id="adminIn" type="password" placeholder="관리자 코드를 입력하세요" autocomplete="off" style="width:150px;padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;font-size:11px"><button id="adminBtn" class="btn ghost" style="padding:4px 10px;font-size:11px;min-height:0">확인</button></div>
+  <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:11px"><span style="opacity:.45">v3.0 · 신규 생존자 15명 · 👹 레이드 · 풀숲 · 맵 축소 · 스킬 이펙트 개편</span><input id="adminIn" type="password" placeholder="관리자 코드를 입력하세요" autocomplete="off" style="width:150px;padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;font-size:11px"><button id="adminBtn" class="btn ghost" style="padding:4px 10px;font-size:11px;min-height:0">확인</button></div>
 </div>
 
 <div id="levelup" class="screen dim hidden">
@@ -517,6 +517,21 @@ function drawHero(g,x,y,r,ch,face,t,moving,alpha=1){if(ch&&ch.admin&&!isAdmin)ch
   case 'velion':{g.fillStyle='#1f2a4d';g.beginPath();g.moveTo(-r*1.05,r*0.1);g.quadraticCurveTo(-r*1.0,-r*1.25,0,-r*1.2);g.quadraticCurveTo(r*1.0,-r*1.25,r*1.05,r*0.1);g.quadraticCurveTo(r*0.4,-r*0.6,0,-r*0.62);g.quadraticCurveTo(-r*0.4,-r*0.6,-r*1.05,r*0.1);g.fill();
    g.strokeStyle='#8fb3ff';g.lineWidth=2;g.shadowColor='#5b8cff';g.shadowBlur=8;for(let k=0;k<5;k++){const a=t*3+k*1.26;g.beginPath();g.ellipse(Math.cos(a)*r*1.25,r*0.3+Math.sin(a)*r*0.35,r*0.16,r*0.1,a,0,TAU);g.stroke()}g.shadowBlur=0;
    g.fillStyle='#9aa5b1';g.fillRect(fx*r*0.9-r*0.25,r*0.35,r*0.5,r*0.22);break}
+  case 'cheongun':{g.fillStyle='#c0392b';g.fillRect(-r*1.0,-r*0.42,r*2.0,r*0.2);g.beginPath();g.moveTo(-fx*r*0.9,-r*0.35);g.quadraticCurveTo(-fx*r*1.6,-r*0.2+Math.sin(t*8)*3,-fx*r*1.9,r*0.1);g.lineTo(-fx*r*1.7,-r*0.05);g.quadraticCurveTo(-fx*r*1.4,-r*0.3,-fx*r*0.95,-r*0.22);g.fill();break}
+  case 'rena':{g.fillStyle='#ecf0f1';g.beginPath();g.moveTo(-r*0.9,-r*0.5);g.quadraticCurveTo(-r*0.2,-r*1.35,r*0.9,-r*0.55);g.quadraticCurveTo(r*0.2,-r*0.9,-r*0.9,-r*0.5);g.fill();g.save();g.translate(fx*r*1.15,r*0.2);g.rotate(fx*0.5);g.fillStyle='#7bed9f';g.fillRect(-r*0.12,-r*1.5,r*0.24,r*1.2);g.fillStyle='#2d3436';g.fillRect(-r*0.25,-r*0.32,r*0.5,r*0.14);g.restore();break}
+  case 'grab':{g.fillStyle='#7f8c8d';g.fillRect(-r*0.75,-r*1.15,r*1.5,r*0.5);g.fillStyle='#f1c40f';g.fillRect(-r*0.6,-r*1.05,r*1.2,r*0.12);g.strokeStyle='#bdc3c7';g.lineWidth=2;g.beginPath();g.moveTo(0,-r*1.15);g.lineTo(0,-r*1.6);g.stroke();g.fillStyle=Math.sin(t*6)>0?'#ff4f6a':'#ffd166';g.beginPath();g.arc(0,-r*1.65,r*0.12,0,TAU);g.fill();break}
+  case 'nemea':{g.fillStyle='#4a235a';for(const sg of[-1,1]){g.beginPath();g.moveTo(sg*r*0.6,-r*0.2);g.quadraticCurveTo(sg*r*1.9,-r*1.3+Math.sin(t*5)*4,sg*r*2.0,r*0.4);g.quadraticCurveTo(sg*r*1.4,0,sg*r*0.8,r*0.4);g.fill()}g.fillStyle='#d2b4de';g.beginPath();g.ellipse(0,-r*1.12,r*0.5,r*0.12,0,0,TAU);g.globalAlpha=0.7;g.fill();g.globalAlpha=1;break}
+  case 'kate':{g.fillStyle='#2c3e50';g.beginPath();g.ellipse(0,-r*0.72,r*1.15,r*0.24,0,0,TAU);g.fill();g.fillRect(-r*0.6,-r*1.45,r*1.2,r*0.78);g.fillStyle='#3498db';g.fillRect(-r*0.6,-r*0.95,r*1.2,r*0.14);break}
+  case 'veil':{g.fillStyle='#2d3436';g.beginPath();g.moveTo(-r*0.95,-r*0.3);g.quadraticCurveTo(0,-r*1.6,r*0.95,-r*0.3);g.quadraticCurveTo(0,-r*0.85,-r*0.95,-r*0.3);g.fill();g.fillStyle='#c0392b';g.fillRect(-r*0.15,-r*1.05,r*0.3,r*0.2);break}
+  case 'pio':{g.fillStyle='#16a085';for(let i=-1;i<=1;i++){g.beginPath();g.moveTo(i*r*0.4-r*0.18,-r*0.85);g.lineTo(i*r*0.5,-r*1.5-Math.abs(i)*-r*0.2+Math.sin(t*6+i)*2);g.lineTo(i*r*0.4+r*0.18,-r*0.85);g.fill()}break}
+  case 'naia':{g.fillStyle='#6c3483';for(const sg of[-1,1]){g.save();g.translate(sg*r*0.75,-r*0.15);g.rotate(sg*(0.5+Math.sin(t*6)*0.15));g.beginPath();g.ellipse(sg*r*0.5,-r*0.3,r*0.7,r*0.28,0,0,TAU);g.fill();g.fillStyle='#e056fd';g.beginPath();g.ellipse(sg*r*0.5,-r*0.3,r*0.35,r*0.1,0,0,TAU);g.fill();g.fillStyle='#6c3483';g.restore()}break}
+  case 'narak':{g.fillStyle='#0b5345';g.beginPath();g.arc(0,-r*0.25,r*1.02,Math.PI,0);g.fill();g.fillStyle='#48c9b0';g.fillRect(-r*0.9,-r*0.3,r*1.8,r*0.12);g.strokeStyle='#d0ece7';g.lineWidth=2.5;g.beginPath();g.moveTo(fx*r*1.1,r*0.8);g.lineTo(fx*r*1.1,-r*1.4);g.stroke();g.beginPath();g.moveTo(fx*r*0.85,-r*1.1);g.lineTo(fx*r*1.1,-r*1.45);g.lineTo(fx*r*1.35,-r*1.1);g.stroke();break}
+  case 'dogyeom':{g.fillStyle='#922b21';g.beginPath();g.arc(0,-r*0.55,r*0.75,Math.PI,0);g.fill();g.fillStyle='#e74c3c';for(const sg of[-1,1]){g.beginPath();g.arc(sg*r*1.05,r*0.3,r*0.38,0,TAU);g.fill();g.strokeStyle='#fff';g.lineWidth=1.5;g.stroke()}break}
+  case 'siren':{g.fillStyle='#0abde3';g.beginPath();g.moveTo(-r*0.95,-r*0.2);g.quadraticCurveTo(-r*1.3,r*0.6+Math.sin(t*4)*3,-r*0.8,r*0.95);g.lineTo(-r*0.6,0);g.fill();g.beginPath();g.moveTo(r*0.95,-r*0.2);g.quadraticCurveTo(r*1.3,r*0.6+Math.sin(t*4+1)*3,r*0.8,r*0.95);g.lineTo(r*0.6,0);g.fill();g.fillStyle='#feca57';g.beginPath();g.arc(r*0.45,-r*0.85,r*0.18,0,TAU);g.fill();break}
+  case 'lorenzo':{g.fillStyle='#ecf0f1';g.beginPath();g.ellipse(fx*r*0.3,-r*0.2,r*0.72,r*0.5,0,Math.PI,0);g.fill();g.fillStyle='#c0392b';g.beginPath();g.arc(fx*r*0.2,-r*0.35,r*0.1,0,TAU);g.arc(fx*r*0.6,-r*0.35,r*0.1,0,TAU);g.fill();g.fillStyle='#7b241c';g.beginPath();g.ellipse(0,-r*0.85,r*1.0,r*0.2,0,0,TAU);g.fill();break}
+  case 'haku':{g.fillStyle='#2d3436';g.beginPath();g.ellipse(0,-r*0.9,r*0.35,r*0.28,0,0,TAU);g.fill();g.strokeStyle='#a29bfe';g.lineWidth=3;for(const sg of[-1,1]){g.beginPath();g.moveTo(sg*r*0.8,r*0.6);g.lineTo(sg*r*1.4,-r*1.0);g.stroke()}g.strokeStyle='#ff7675';g.beginPath();g.moveTo(r*1.4,-r*1.0);g.lineTo(r*1.25,-r*0.6);g.stroke();break}
+  case 'chrono':{g.fillStyle='#dfe6e9';g.beginPath();g.moveTo(-r*0.9,-r*0.35);for(let i=0;i<=6;i++)g.lineTo(-r*0.9+i*r*0.3,-r*0.35-(i%2?r*0.75:r*0.45));g.lineTo(r*0.9,-r*0.35);g.fill();g.strokeStyle='#00d2d3';g.lineWidth=2;g.beginPath();g.arc(-fx*r*1.2,0,r*0.35,0,TAU);g.stroke();g.beginPath();g.moveTo(-fx*r*1.2,0);g.lineTo(-fx*r*1.2+Math.cos(t*3)*r*0.28,Math.sin(t*3)*r*0.28);g.stroke();break}
+  case 'angler':{g.fillStyle='#95a5a6';g.beginPath();g.arc(0,-r*0.1,r*1.12,Math.PI*1.05,-Math.PI*0.05);g.fill();g.fillStyle='#1e3799';g.beginPath();g.arc(fx*r*0.35,-r*0.25,r*0.42,0,TAU);g.fill();g.fillStyle='#82ccdd';g.beginPath();g.arc(fx*r*0.35,-r*0.25,r*0.3,0,TAU);g.fill();g.strokeStyle='#7f8c8d';g.lineWidth=3;g.beginPath();g.moveTo(-fx*r*1.1,-r*0.6);g.lineTo(-fx*r*1.1,r*0.9);g.stroke();g.beginPath();g.arc(-fx*r*1.1,r*0.6,r*0.35,0,Math.PI);g.stroke();break}
   case 'kagero':{g.fillStyle='#2c1a3d';g.fillRect(-r*0.95,-r*0.05,r*1.9,r*0.38);g.fillStyle='#b07cff';g.beginPath();g.moveTo(-r*0.9,r*0.05);g.quadraticCurveTo(-fx*r*1.6,r*0.3+Math.sin(t*9)*3,-fx*r*2.0,r*0.6);g.lineTo(-r*0.6,r*0.25);g.fill();g.fillStyle='#3b2350';g.beginPath();g.arc(0,-r*0.25,r*0.98,Math.PI,0);g.fill();
    g.strokeStyle='#d7bde2';g.lineWidth=2;for(const sg of[-1,1]){g.beginPath();g.arc(sg*r*1.2,r*0.2,r*0.35,sg>0?-1.4:Math.PI+1.4-2,sg>0?0.2:Math.PI+1.4);g.stroke()}break}
   case 'omega':{g.fillStyle='#ffd700';g.shadowColor='#ffd700';g.shadowBlur=14;g.beginPath();g.ellipse(0,-r*1.25,r*0.85,r*0.22,0,0,TAU);g.lineWidth=3;g.strokeStyle='#ffd700';g.stroke();g.shadowBlur=0;
@@ -603,8 +618,8 @@ const CHARS=[
  {id:'orbiter',name:'오비터',title:'궤도 사령관',emo:'🚀',color:'#80deea',hp:140,start:'drone',trait:'투사체·드론 +1',tfx:[['stat',{extra:1}]],skill:{name:'궤도 폭격',icon:'🛰️',cd:22,desc:'적들 위로 위성 포격 12발',fx:[['rain',{n:12,R:85,dmg:105}]]}},
  {id:'mira',name:'미라',title:'시간의 마녀',emo:'⏳',color:'#ce93d8',hp:95,start:'lightning',trait:'모든 쿨다운 -15%',tfx:[['stat',{cd:0.15}]],skill:{name:'시간 정지',icon:'⌛',cd:26,desc:'넓은 범위의 모든 적을 1.8초간 멈춘다',fx:[['freeze',{R:620,s:1.8}]]}},
  {id:'bear',name:'우르',title:'불곰 전사',emo:'🐻',color:'#a1887f',hp:200,start:'hammer',trait:'입힌 피해의 3% 흡혈',tfx:[['lifesteal',{p:0.025}]],skill:{name:'광폭화',icon:'🐾',cd:22,desc:'5초간 거대해지고 공격 속도 2배',fx:[['giant',{s:5}],['rapid',{s:5}]]}},
- {id:'karn',name:'카르논',title:'핏빛 검귀',emo:'🩸',color:'#c0162f',hp:165,spd:0.95,start:'cleave',trait:'사신의 자세: 8초마다 다음 공격이 강화되어 큰 피해를 주고 체력 6% 회복',tfx:[['empower',{cd:8,m:1.9,h:0.06}]],skill:{name:'파멸의 대검',icon:'🗡️',cd:13,desc:'최대 3번 이어서 쓰는 대검 내려찍기 (4초 안에 다시 누르기). 칼끝(스위트 스팟)에 맞은 적은 피해 증가 + 기절',combo:[[['slam',{L:260,w:70,dmg:68,sweet:1.45,fz:0.45}]],[['slam',{L:210,w:90,dmg:77,sweet:1.45,fz:0.45}]],[['slam',{R:140,dmg:95,sweet:1.45,fz:0.6}]]],win:4}},
- {id:'amara',name:'아마라',title:'철혈의 장군',emo:'🦁',color:'#d4a017',hp:160,spd:1.08,start:'cleave',trait:'스킬을 쓸 때마다 짧게 돌진하고 1.5초간 치명타',tfx:[],skill:{name:'분쇄의 칼날',icon:'⚔️',cd:9,desc:'부채꼴로 베고, 3초 안에 다시 누르면 일직선으로 내려친다. 끝부분에 맞으면 추가 피해',combo:[[['slam',{arc:1.7,R:170,dmg:58,sweet:1.5}]],[['slam',{L:250,w:50,dmg:72,sweet:1.5,fz:0.35}]]],win:3}},
+ {id:'karn',name:'카르논',title:'핏빛 검귀',emo:'🩸',color:'#c0162f',hp:150,spd:0.95,start:'cleave',trait:'사신의 자세: 8초마다 다음 공격이 강화되어 큰 피해를 주고 체력 6% 회복',tfx:[['empower',{cd:8,m:1.6,h:0.05}]],skill:{name:'파멸의 대검',icon:'🗡️',cd:13,desc:'최대 3번 이어서 쓰는 대검 내려찍기 (4초 안에 다시 누르기). 칼끝(스위트 스팟)에 맞은 적은 피해 증가 + 기절',combo:[[['slam',{L:260,w:70,dmg:58,sweet:1.4,fz:0.4}]],[['slam',{L:210,w:90,dmg:66,sweet:1.4,fz:0.4}]],[['slam',{R:140,dmg:82,sweet:1.4,fz:0.5}]]],win:4}},
+ {id:'amara',name:'아마라',title:'철혈의 장군',emo:'🦁',color:'#d4a017',hp:148,spd:1.08,start:'cleave',trait:'스킬을 쓸 때마다 짧게 돌진하고 1.5초간 치명타',tfx:[],skill:{name:'분쇄의 칼날',icon:'⚔️',cd:9,desc:'부채꼴로 베고, 3초 안에 다시 누르면 일직선으로 내려친다. 끝부분에 맞으면 추가 피해',combo:[[['slam',{arc:1.7,R:170,dmg:58,sweet:1.5}]],[['slam',{L:250,w:50,dmg:72,sweet:1.5,fz:0.35}]]],win:3}},
  {id:'yeou',name:'여우비',title:'구미호',emo:'🦊',color:'#ff7eb6',hp:120,spd:1.06,start:'bolt',trait:'정기 흡수: 적을 처치하면 체력 회복 · 스킬을 쓰면 잠깐 빨라진다',tfx:[['killheal',{h:0.25}],['skhaste',{}]],skill:{name:'현혹의 구슬',icon:'🔮',cd:6,desc:'커다란 여우 구슬을 던졌다가 되돌려 받는다 (가는 길·오는 길 모두 피해)',fx:[['orb',{dmg:85,rg:380}]]}},
  {id:'charon',name:'카론',title:'망자의 간수',emo:'🏮',color:'#3dd9a5',hp:150,spd:0.95,start:'boomer',trait:'영혼 수집: 적을 처치할수록 방어가 영구히 오른다 (최대 +5) · 방어 +1',tfx:[['souls',{}],['stat',{armor:1}]],skill:{name:'사형 선고',icon:'⛓️',cd:12,desc:'멀리 사슬 낫을 던져 맞은 적을 끝까지 끌어오고 기절시킨다',fx:[['hook',{range:540,dmg:90,pull:1,fz:0.9}]]}},
  {id:'torch',name:'토치',title:'광기의 폭파범',emo:'🧨',color:'#4fc3f7',hp:95,spd:1.05,start:'kunai',trait:'탄환 +1 · 적을 처치하면 3초간 이동·공격 속도 증가',tfx:[['frenzy',{s:3}],['stat',{extra:1}]],skill:{name:'무기 교체!',icon:'🔫',cd:10,desc:'4초간 미니건 모드: 공격 속도 2배 + 이동 속도 증가',fx:[['rapid',{s:4}],['haste',{s:4,m:1.15}]]}},
@@ -620,7 +635,22 @@ const CHARS=[
  {id:'ido',name:'이도',title:'검의 달인',emo:'🧘',color:'#2ecc71',hp:135,spd:1.1,start:'cleave',trait:'두 번 베기: 공격 3번마다 한 번은 두 배 피해 · 치명타 확률 +10%',tfx:[['dstrike',{}],['stat',{crit:0.1}]],skill:{name:'일격필살',icon:'⚡',cd:12,desc:'무적 상태로 순간이동하며 적 4명을 연속으로 벤다',fx:[['shield',{s:0.8}],['chain',{n:4,dmg:140,range:450}]]}},
  {id:'ruby',name:'루비',title:'불꽃 소녀',emo:'🧸',color:'#ff6f61',hp:105,start:'flame',trait:'방화광: 스킬을 4번 쓸 때마다 주변 적을 1초간 기절시킨다',tfx:[['pyro',{}]],skill:{name:'분해',icon:'🔥',cd:5,desc:'가까운 적에게 불덩이를 쏜다',fx:[['zap',{n:1,dmg:115,range:450}]]}},
  {id:'velion',name:'벨리온',title:'사슬의 반역자',emo:'⛓️',color:'#5b8cff',hp:130,spd:1.02,start:'cleave',trait:'스킬을 쓸 때마다 사슬을 휘둘러 주변에 마법 폭발',tfx:[],skill:{name:'사슬 채찍',icon:'🪢',cd:7,desc:'사슬 두 줄을 교차해 내려치고, 교차점이 잠시 뒤 폭발하며 적을 늦춘다',fx:[['slam',{L:260,w:40,dmg:50,sweet:1.4,fz:0.5}],['delay',{t:0.4,fx:[['rocket',{dmg:60,R:90,range:320}]]}]]}},
- {id:'kagero',name:'카게로',title:'연막의 닌자',emo:'🌫️',color:'#b07cff',hp:115,spd:1.12,start:'cleave',trait:'암살자의 표식: 스킬을 쓰면 잠깐 빨라지고 다음 공격이 크게 강화되며 체력 회복',tfx:[['skillamp',{m:1.9,h:0.04}],['skhaste',{}]],skill:{name:'오연투척',icon:'🌙',cd:4,desc:'부채꼴로 쿠나이를 던진다. 끝에 맞은 적은 둔화',fx:[['slam',{arc:1.1,R:230,dmg:55,sweet:1.3,fz:0.4}]]}},
+ {id:'kagero',name:'카게로',title:'연막의 닌자',emo:'🌫️',color:'#b07cff',hp:130,spd:1.12,start:'cleave',trait:'암살자의 표식: 스킬을 쓰면 잠깐 빨라지고 다음 공격이 크게 강화되며 체력 회복',tfx:[['skillamp',{m:1.9,h:0.04}],['skhaste',{}]],skill:{name:'오연투척',icon:'🌙',cd:4,desc:'부채꼴로 쿠나이를 던진다. 끝에 맞은 적은 둔화',fx:[['slam',{arc:1.1,R:230,dmg:55,sweet:1.3,fz:0.4}]]}},
+ {id:'cheongun',name:'청운',title:'눈먼 무승',emo:'🙏',color:'#e67e22',hp:170,spd:1.08,start:'cleave',trait:'연타: 스킬을 쓰면 다음 공격이 강해지고 체력을 회복하며 잠깐 빨라진다',tfx:[['skillamp',{m:1.7,h:0.04}],['skhaste',{}]],skill:{name:'음파 / 공명타',icon:'👊',cd:6,desc:'음파를 날려 맞히고, 3초 안에 다시 쓰면 맞은 적에게 날아차기',combo:[[['snipe',{n:1,dmg:70}]],[['chain',{n:1,dmg:75,range:520,exe:0.6}]]],win:3}},
+ {id:'rena',name:'레나',title:'추방된 검사',emo:'🗡️',color:'#2ecc71',hp:140,spd:1.08,start:'cleave',trait:'룬 검: 스킬을 쓸 때마다 다음 공격에 추가 피해',tfx:[['skillamp',{m:1.5}],['stat',{dash:0.2}]],skill:{name:'부러진 날개',icon:'🪽',cd:5,desc:'짧게 뛰어들며 베기 · 4초 안에 3번까지 · 세 번째는 띄워 올린다',combo:[[['blink',{d:110}],['slam',{arc:1.6,R:140,dmg:45}]],[['blink',{d:110}],['slam',{arc:1.6,R:140,dmg:45}]],[['blink',{d:130}],['slam',{R:110,dmg:55,fz:0.7}]]],win:4}},
+ {id:'grab',name:'그랩',title:'증기 골렘',emo:'🦾',color:'#f1c40f',hp:225,spd:0.92,start:'hammer',trait:'마나 방어막: 일정 시간마다 큰 공격 한 번을 막는다 · 방어 +2',tfx:[['barrier',{cd:11}],['stat',{armor:2}]],skill:{name:'로켓 손',icon:'🖐️',cd:8,desc:'손을 쏘아 맞은 적을 끌어오고 잠깐 기절시킨다',fx:[['hook',{range:540,dmg:70,pull:1,fz:0.6}]]}},
+ {id:'nemea',name:'네메아',title:'타락한 천사',emo:'🦇',color:'#8e44ad',hp:145,spd:0.98,start:'bolt',trait:'영혼 흡수: 입힌 피해의 일부만큼 회복',tfx:[['lifesteal',{p:0.04}]],skill:{name:'어둠의 속박',icon:'🔗',cd:8,desc:'어둠 구체를 날려 맞은 적을 오래 묶는다',fx:[['hook',{range:560,dmg:90,pull:0,fz:1.6}]]}},
+ {id:'kate',name:'케이트',title:'도시의 보안관',emo:'🔭',color:'#3498db',hp:120,spd:1.0,start:'sniper',trait:'헤드샷: 세 번째 공격마다 두 배 피해 · 사거리 증가',tfx:[['dstrike',{}],['far',{m:0.3}]],skill:{name:'평화의 사도',icon:'🔫',cd:6,desc:'관통하는 탄환을 일직선으로 쏜다',fx:[['slam',{L:680,w:30,dmg:90,sweet:1.2}]]}},
+ {id:'veil',name:'베일',title:'밤의 사냥꾼',emo:'🦉',color:'#95a5a6',hp:105,spd:1.1,start:'bolt',trait:'은화살: 같은 적을 세 번 맞히면 큰 추가 피해 · 구르기 후 공격 강화',tfx:[['dstrike',{}],['skillamp',{m:1.6}]],skill:{name:'구르기',icon:'🤸',cd:4,desc:'원하는 방향으로 구르고 다음 공격 강화',fx:[['blink',{d:120}]]}},
+ {id:'pio',name:'피오',title:'바다의 장난꾸러기',emo:'🐟',color:'#1abc9c',hp:150,spd:1.15,start:'cleave',trait:'재빠른 싸움꾼: 공격을 15% 확률로 회피',tfx:[['dodge',{p:0.15}]],skill:{name:'성게 찌르기',icon:'🔱',cd:6,desc:'적을 꿰뚫으며 지나간다',fx:[['chain',{n:1,dmg:65,range:380}]]}},
+ {id:'naia',name:'나이아',title:'공허의 딸',emo:'🦋',color:'#9b59b6',hp:120,spd:1.06,start:'bolt',trait:'부식성 상처: 처치할 때마다 공격력이 영구 증가 (최대 40%) · 잃은 체력 비례 추가 피해',tfx:[['stack',{}],['execute',{m:0.3}]],skill:{name:'이케시아 폭우',icon:'💜',cd:7,desc:'주변 적들에게 미사일이 쏟아진다',fx:[['zap',{n:4,dmg:55,range:440}]]}},
+ {id:'narak',name:'나락',title:'심해의 학살자',emo:'🌊',color:'#16a085',hp:140,spd:1.05,start:'cleave',trait:'가라앉은 자의 축복: 4초간 맞지 않으면 체력 빠르게 회복 · 처치 시 쿨타임 감소',tfx:[['perse',{}],['killcd',{}]],skill:{name:'뼈 작살',icon:'🦴',cd:8,desc:'작살을 던져 적을 끌어온다',fx:[['hook',{range:480,dmg:60,pull:1,fz:0.4}]]}},
+ {id:'dogyeom',name:'도겸',title:'우두머리',emo:'🥊',color:'#e74c3c',hp:230,spd:0.98,start:'hammer',trait:'강철 주먹: 체력이 낮을수록 강해진다',tfx:[['lowhp',{m:0.35}],['stat',{hp:0.1}]],skill:{name:'주먹질',icon:'👊',cd:6,desc:'2초간 공격 속도와 이동 속도 증가',fx:[['rapid',{s:2}],['haste',{s:1.5,m:1.3}]]}},
+ {id:'siren',name:'세이렌',title:'파도 소환사',emo:'🧜',color:'#48dbfb',hp:135,spd:1.0,start:'bolt',trait:'밀물: 스킬을 쓰면 잠깐 빨라진다',tfx:[['skhaste',{}],['stat',{cd:0.1}]],skill:{name:'물방울 감옥',icon:'🫧',cd:8,desc:'물방울을 떨어뜨려 범위 안 적을 1.4초 가둔다',fx:[['rocket',{dmg:70,R:85,range:540,fz:1.4}]]}},
+ {id:'lorenzo',name:'로렌초',title:'잔혹한 연출가',emo:'🎭',color:'#c0392b',hp:130,spd:0.98,start:'sniper',trait:'네 번째 탄환: 세 번째 공격마다 치명적 연출 (두 배 피해) · 치명타 +15%',tfx:[['dstrike',{}],['stat',{crit:0.15}]],skill:{name:'춤추는 유탄',icon:'💐',cd:7,desc:'적 사이를 튕기는 유탄 (처치 시 더 아프다)',fx:[['zap',{n:3,dmg:80,range:420,exe:0.5}]]}},
+ {id:'haku',name:'하쿠',title:'망자의 검객',emo:'👺',color:'#a29bfe',hp:155,spd:1.07,start:'cleave',trait:'사냥꾼의 길: 치명타 +15% · 흡혈',tfx:[['stat',{crit:0.2}],['lifesteal',{p:0.04}]],skill:{name:'필멸의 검',icon:'⚔️',cd:4,desc:'일직선 찌르기 · 5초 안에 3번째는 앞으로 돌진하며 띄운다',combo:[[['slam',{L:280,w:40,dmg:45}]],[['slam',{L:280,w:40,dmg:45}]],[['blink',{d:200}],['slam',{L:240,w:60,dmg:55,fz:0.7}]]],win:5}},
+ {id:'chrono',name:'크로노',title:'시간을 달리는 소년',emo:'🕰️',color:'#00d2d3',hp:175,spd:1.06,start:'cleave',trait:'공명: 세 번째 공격마다 두 배 피해 · 이동 속도 증가',tfx:[['dstrike',{}],['stat',{spd:0.06}],['lifesteal',{p:0.03}]],skill:{name:'시간 톱니바퀴',icon:'⚙️',cd:6,desc:'되돌아오는 톱니바퀴를 던진다',fx:[['orb',{dmg:130,rg:330}]]}},
+ {id:'angler',name:'앵글러',title:'심해의 거인',emo:'🤿',color:'#2e86de',hp:215,spd:0.9,start:'hammer',trait:'맹공: 공격이 적을 느리게 만든다 · 방어 +3',tfx:[['chill',{}],['stat',{armor:1}]],skill:{name:'닻 투척',icon:'⚓',cd:9,desc:'닻을 던져 적을 끌어오고 묶는다',fx:[['hook',{range:470,dmg:70,pull:0.6,fz:0.6}]]}},
  {id:'sola',name:'솔라',title:'태양 기사',emo:'🌅',color:'#f39c12',hp:210,spd:0.95,start:'cleave',trait:'햇빛: 스킬을 쓰면 다음 공격이 태양빛으로 폭발 · 방어 +2',tfx:[['skillamp',{m:1.6}],['stat',{armor:2}]],skill:{name:'일식 강타',icon:'🌗',cd:7,desc:'방패로 앞을 내려쳐 1초간 기절시킨다',fx:[['slam',{R:90,dmg:60,fz:1}]]}},
 ];
 for(const c of CHARS){c.spd=c.spd||1;c.might=c.might||1;c.armor=c.armor||0;c.regen=c.regen||0;c.cd=c.cd||1;c.dash=c.dash||2.4;c.crit=c.crit||0}
@@ -727,6 +757,36 @@ const GS={
   s:[{n:'반역의 사슬',i:'🔗',d:'스킬2 쿨다운 -25%',fx:[['stat',{s2:0.25}]]},{n:'해방의 의지',i:'💎',d:'궁극기 충전 속도 +35%',fx:[['stat',{uc:0.35}]]}]},
  kagero:{g:[{n:'표창 귀환',i:'✴️',cd:10,d:'표창을 던진 뒤 맞은 적에게 날아간다',fx:[['snipe',{n:1,dmg:60}],['delay',{t:0.4,fx:[['chain',{n:1,dmg:60,range:500}]]}]]},{n:'연막 도약',i:'💨',cd:9,d:'순간이동 + 1초 은신',fx:[['blink',{d:190}],['stealth',{s:1}]]}],
   s:[{n:'그림자 손길',i:'🗡️',d:'모든 피해 +12%',fx:[['stat',{might:0.12}]]},{n:'연막 숙련',i:'🌫️',d:'스킬2 쿨다운 -30%',fx:[['stat',{s2:0.3}]]}]},
+ cheongun:{g:[{n:'방호',i:'🛡️',cd:11,d:'짧게 뛰어오르며 1초 무적',fx:[['blink',{d:150}],['shield',{s:1}]]},{n:'지진파',i:'🌊',cd:10,d:'바닥을 내려쳐 주변 적을 늦춘다',fx:[['blast',{R:150,dmg:45,fz:0.6,c:'255,160,60'}]]}],
+  s:[{n:'철갑',i:'🧱',d:'방어 +2 · 체력 +10%',fx:[['stat',{armor:2,hp:0.1}]]},{n:'수련의 길',i:'🙏',d:'스킬 쿨다운 -15%',fx:[['stat',{cd:0.15}]]}]},
+ rena:{g:[{n:'용맹',i:'🛡️',cd:11,d:'1초 무적 + 빨라진다',fx:[['shield',{s:1}],['haste',{s:2,m:1.3}]]},{n:'기 폭발',i:'💥',cd:9,d:'주변 적을 기절시킨다',fx:[['blast',{R:120,dmg:45,fz:0.7,c:'120,255,170'}]]}],
+  s:[{n:'검의 의지',i:'🗡️',d:'모든 피해 +12%',fx:[['stat',{might:0.12}]]},{n:'질풍',i:'💨',d:'대시 쿨다운 -30%',fx:[['stat',{dash:0.3}]]}]},
+ grab:{g:[{n:'폭주',i:'🔥',cd:12,d:'3초간 매우 빨라진다',fx:[['haste',{s:3,m:1.5}]]},{n:'강력한 주먹',i:'🥊',cd:9,d:'앞을 크게 쳐서 띄운다',fx:[['slam',{R:90,dmg:70,fz:0.9}]]}],
+  s:[{n:'강철 몸체',i:'🔩',d:'방어 +3',fx:[['stat',{armor:3}]]},{n:'전력 과부하',i:'⚡',d:'궁극기 충전 +35%',fx:[['stat',{uc:0.35}]]}]},
+ nemea:{g:[{n:'칠흑의 방패',i:'🛡️',cd:13,d:'2초 무적 + 주변 탄환 제거',fx:[['shield',{s:2}],['clear',{R:150}]]},{n:'고통의 대지',i:'🟣',cd:10,d:'적 위치에 독 장판',fx:[['field',{R:110,dps:40,dur:3,at:'enemy',kind:'poison'}]]}],
+  s:[{n:'타락한 날개',i:'🪽',d:'흡혈 강화',fx:[['lifesteal',{p:0.03}]]},{n:'영혼 사슬',i:'⛓️',d:'스킬 쿨다운 -15%',fx:[['stat',{cd:0.15}]]}]},
+ kate:{g:[{n:'요들잡이 덫',i:'🪤',cd:10,d:'주변에 덫 3개',fx:[['mines',{n:3,R:70,dmg:55}]]},{n:'90구경 투망',i:'🕸️',cd:9,d:'뒤로 뛰며 그물 발사',fx:[['blink',{d:-150}],['snipe',{n:1,dmg:50}]]}],
+  s:[{n:'정조준',i:'🎯',d:'치명타 +12%',fx:[['stat',{crit:0.12}]]},{n:'보안관 배지',i:'⭐',d:'모든 피해 +10%',fx:[['stat',{might:0.1}]]}]},
+ veil:{g:[{n:'선고',i:'💢',cd:9,d:'가까운 적을 맞혀 1초 기절',fx:[['hook',{range:320,dmg:60,pull:0,fz:1}]]},{n:'어둠 속으로',i:'🌑',cd:12,d:'구르며 1.5초 은신',fx:[['blink',{d:120}],['stealth',{s:1.5}]]}],
+  s:[{n:'은빛 화살촉',i:'🏹',d:'모든 피해 +12%',fx:[['stat',{might:0.12}]]},{n:'사냥꾼의 발걸음',i:'👣',d:'이동 속도 +8%',fx:[['stat',{spd:0.08}]]}]},
+ pio:{g:[{n:'장난치기',i:'🎣',cd:11,d:'뛰어올라 무적 → 착지하며 주변 기절',fx:[['shield',{s:0.9}],['blink',{d:150}],['delay',{t:0.8,fx:[['blast',{R:130,dmg:60,fz:0.6,c:'80,230,200'}]]}]]},{n:'파도 타기',i:'🌊',cd:9,d:'3초간 빨라짐',fx:[['haste',{s:3,m:1.4}]]}],
+  s:[{n:'성게 가시',i:'🦔',d:'받은 피해 일부 반사',fx:[['thorns',{p:0.4}]]},{n:'날렵함',i:'🐠',d:'회피 확률 +10%',fx:[['dodge',{p:0.1}]]}]},
+ naia:{g:[{n:'공허추적 미사일',i:'🚀',cd:9,d:'관통 미사일 발사',fx:[['snipe',{n:1,dmg:110}]]},{n:'고조된 감각',i:'🦋',cd:12,d:'1.5초 은신 + 빨라진다',fx:[['stealth',{s:1.5}],['haste',{s:2,m:1.4}]]}],
+  s:[{n:'진화',i:'🧬',d:'모든 피해 +12%',fx:[['stat',{might:0.12}]]},{n:'살아있는 무기',i:'💠',d:'궁극기 충전 +30%',fx:[['stat',{uc:0.3}]]}]},
+ narak:{g:[{n:'유령 잠수',i:'👻',cd:12,d:'2초 은신 + 빨라진다',fx:[['stealth',{s:2}],['haste',{s:2,m:1.4}]]},{n:'망령 돌진',i:'💀',cd:10,d:'돌진 뒤 망령이 지나간 자리 기절',fx:[['slam',{L:260,w:50,dmg:50,fz:0.8}],['blink',{d:240}]]}],
+  s:[{n:'심해의 숨결',i:'🫧',d:'체력 재생 +2',fx:[['stat',{regen:2}]]},{n:'현상금',i:'💰',d:'처치 시 체력 회복',fx:[['killheal',{h:0.3}]]}]},
+ dogyeom:{g:[{n:'해머링',i:'💪',cd:12,d:'잠깐 무적 후 앞으로 큰 일격',fx:[['shield',{s:0.8}],['slam',{L:300,w:70,dmg:90,sweet:1.4}]]},{n:'우두머리의 함성',i:'📣',cd:10,d:'주변 적을 끌어당겨 기절',fx:[['blast',{R:170,dmg:40,fz:0.6,c:'255,90,70'}]]}],
+  s:[{n:'굳은 의지',i:'🔥',d:'치명상을 한 번 버틴다',fx:[['second',{}]]},{n:'근성',i:'💢',d:'체력 +15%',fx:[['stat',{hp:0.15}]]}]},
+ siren:{g:[{n:'밀물 썰물',i:'🌊',cd:10,d:'아군 회복 + 적에게 튕기는 물줄기',fx:[['healall',{R:260,p:0.18}],['zap',{n:2,dmg:50,range:420}]]},{n:'파도의 축복',i:'💧',cd:12,d:'3초간 빨라지고 회복',fx:[['haste',{s:3,m:1.3}],['heal',{p:0.15}]]}],
+  s:[{n:'심해의 노래',i:'🎶',d:'스킬 쿨다운 -15%',fx:[['stat',{cd:0.15}]]},{n:'조류의 힘',i:'🐚',d:'궁극기 충전 +35%',fx:[['stat',{uc:0.35}]]}]},
+ lorenzo:{g:[{n:'치명적 연출',i:'🎬',cd:10,d:'긴 사거리 관통 탄 · 맞으면 묶인다',fx:[['slam',{L:800,w:26,dmg:80,fz:1}]]},{n:'관객 모집',i:'🌹',cd:11,d:'주변에 연꽃 덫 3개',fx:[['mines',{n:3,R:70,dmg:60}]]}],
+  s:[{n:'예술의 완성',i:'🎨',d:'치명타 +12%',fx:[['stat',{crit:0.12}]]},{n:'무대 장악',i:'🎭',d:'모든 피해 +10%',fx:[['stat',{might:0.1}]]}]},
+ haku:{g:[{n:'영혼 분리',i:'👻',cd:13,d:'앞으로 돌진해 3.5초간 강해지고, 끝나면 원래 자리로 돌아온다',fx:[['blink',{d:220}],['power',{s:3.5,m:1.3}],['delay',{t:3.5,fx:[['rewind',{t:3.6,p:0}]]}]]},{n:'영혼 방패',i:'🛡️',cd:11,d:'1초 무적 + 회복',fx:[['shield',{s:1}],['heal',{p:0.12}]]}],
+  s:[{n:'망자의 검',i:'🗡️',d:'모든 피해 +12%',fx:[['stat',{might:0.12}]]},{n:'질풍검',i:'💨',d:'대시 쿨다운 -30%',fx:[['stat',{dash:0.3}]]}]},
+ chrono:{g:[{n:'위상 돌진',i:'💨',cd:9,d:'순간이동 후 다음 공격 강화',fx:[['blink',{d:180}],['power',{s:2,m:1.4}]]},{n:'평행 시간 교차',i:'🌀',cd:12,d:'잠시 뒤 터지는 시간장으로 적 기절',fx:[['rocket',{dmg:40,R:140,range:450,fz:1.6}]]}],
+  s:[{n:'시간 가속',i:'⏩',d:'스킬 쿨다운 -15%',fx:[['stat',{cd:0.15}]]},{n:'시간 보험',i:'⏪',d:'치명상을 한 번 버틴다',fx:[['second',{}]]}]},
+ angler:{g:[{n:'타이탄의 분노',i:'🛡️',cd:13,d:'1.5초 무적 + 주변 지속 피해',fx:[['shield',{s:1.5}],['field',{R:120,dps:30,dur:3}]]},{n:'역류',i:'🌊',cd:10,d:'주변 적을 느리게 한다',fx:[['blast',{R:180,dmg:45,fz:0.8,c:'60,140,255'}]]}],
+  s:[{n:'심해의 갑주',i:'🐚',d:'방어 +3',fx:[['stat',{armor:3}]]},{n:'수압',i:'💧',d:'받은 피해 일부 반사',fx:[['thorns',{p:0.5}]]}]},
  sola:{g:[{n:'천정의 검',i:'🗡️',cd:10,d:'적에게 날아가 붙어 묶는다',fx:[['chain',{n:1,dmg:50,range:450,fz:0.5}]]},{n:'태양 방패',i:'☀️',cd:14,d:'체력 20% 회복',fx:[['heal',{p:0.2}]]}],
   s:[{n:'태양의 가호',i:'🌞',d:'받은 피해 일부를 되돌려준다',fx:[['thorns',{p:0.4}]]},{n:'불굴',i:'🔰',d:'치명상을 한 번 버틴다',fx:[['second',{}]]}]},
 };
@@ -779,6 +839,21 @@ const SK2={
  ruby:{name:'소각',icon:'🌋',cd:8,desc:'앞쪽 부채꼴로 불꽃을 뿜는다',fx:[['slam',{arc:1.2,R:180,dmg:75,sweet:1.2,fz:0.3}]]},
  velion:{name:'국왕 시해자',icon:'👑',cd:11,desc:'적에게 달려들어 베고, 잃은 체력에 비례해 크게 회복한다',fx:[['chain',{n:1,dmg:110,range:400,exe:0.8}],['healmiss',{p:0.3}]]},
  kagero:{name:'황혼의 장막',icon:'🌫️',cd:14,desc:'연막을 터뜨려 3초간 은신하고 빨라진다',fx:[['stealth',{s:3}],['haste',{s:3,m:1.35}]]},
+ cheongun:{name:'철갑 / 방호',icon:'🛡️',cd:11,desc:'앞으로 뛰어들며 1초 무적 + 다음 공격 흡혈',fx:[['blink',{d:160}],['shield',{s:1}],['ulifesteal',{s:3,p:0.08}]]},
+ rena:{name:'기 폭발',icon:'💥',cd:8,desc:'주변을 폭발시켜 적을 기절시킨다',fx:[['blast',{R:125,dmg:55,fz:0.7,c:'120,255,170'}]]},
+ grab:{name:'강력한 주먹',icon:'🥊',cd:9,desc:'다음 공격이 적을 공중에 띄워 기절시킨다',fx:[['slam',{R:95,dmg:70,fz:1}]]},
+ nemea:{name:'고통의 대지',icon:'🟣',cd:9,desc:'원하는 위치에 독 장판을 깐다',fx:[['field',{R:120,dps:45,dur:3,at:'enemy',kind:'poison'}]]},
+ kate:{name:'요들잡이 덫',icon:'🪤',cd:10,desc:'주변에 덫을 깔아 밟은 적을 터뜨린다',fx:[['mines',{n:3,R:70,dmg:60}]]},
+ veil:{name:'선고',icon:'💢',cd:9,desc:'적을 강하게 쏘아 1.2초 기절시킨다',fx:[['hook',{range:330,dmg:70,pull:0,fz:1.2}]]},
+ pio:{name:'장난치기',icon:'🎣',cd:11,desc:'뛰어올라 무적이 됐다가 착지하며 주변 적을 기절',fx:[['shield',{s:0.9}],['blink',{d:160}],['delay',{t:0.8,fx:[['blast',{R:135,dmg:65,fz:0.6,c:'80,230,200'}]]}]]},
+ naia:{name:'공허추적 미사일',icon:'🚀',cd:9,desc:'멀리 관통하는 공허 미사일',fx:[['snipe',{n:1,dmg:120}]]},
+ narak:{name:'유령 잠수',icon:'👻',cd:12,desc:'2초 은신 + 빨라진다',fx:[['stealth',{s:2}],['haste',{s:2,m:1.45}]]},
+ dogyeom:{name:'해머링',icon:'💪',cd:11,desc:'잠깐 무적 후 앞으로 거대한 일격 (끝부분이 더 아프다)',fx:[['shield',{s:0.8}],['slam',{L:320,w:70,dmg:95,sweet:1.4}]]},
+ siren:{name:'밀물 썰물',icon:'🌊',cd:10,desc:'아군을 회복하고 적에게 튕기는 물줄기',fx:[['healall',{R:260,p:0.18}],['zap',{n:2,dmg:55,range:420}]]},
+ lorenzo:{name:'치명적 연출',icon:'🎬',cd:10,desc:'아주 긴 사거리 관통 탄 · 맞으면 묶인다',fx:[['slam',{L:820,w:26,dmg:85,fz:1}]]},
+ haku:{name:'영혼 분리',icon:'👻',cd:13,desc:'앞으로 돌진해 3.5초간 강해지고, 끝나면 원래 자리로 돌아온다',fx:[['blink',{d:220}],['power',{s:3.5,m:1.3}],['delay',{t:3.5,fx:[['rewind',{t:3.6,p:0}]]}]]},
+ chrono:{name:'평행 시간 교차',icon:'🌀',cd:12,desc:'잠시 뒤 터지는 시간장으로 적을 기절시킨다',fx:[['rocket',{dmg:50,R:140,range:460,fz:1.6}]]},
+ angler:{name:'타이탄의 분노',icon:'🛡️',cd:13,desc:'1.5초 무적 + 주변에 지속 피해',fx:[['shield',{s:1.5}],['field',{R:120,dps:35,dur:3}]]},
  sola:{name:'일식',icon:'🌒',cd:12,desc:'1.5초 무적 후 주변에 태양 폭발',fx:[['shield',{s:1.5}],['delay',{t:1.5,fx:[['blast',{R:160,dmg:70}]]}]]},
  karn:{name:'지옥 사슬',icon:'⛓️',cd:13,desc:'사슬을 던져 적을 끌어오고 잠깐 묶는다',fx:[['hook',{range:420,dmg:60,pull:0.6,fz:0.8}]]},
  amara:{name:'강철 의지',icon:'🛡️',cd:12,desc:'1.2초 무적 후 주변을 내려찍는다',fx:[['shield',{s:1.2}],['delay',{t:1.2,fx:[['blast',{R:155,dmg:85,kb:280}]]}]]},
@@ -832,6 +907,21 @@ const ULT={
  ruby:{name:'곰 인형 소환',icon:'🧸',desc:'거대 곰 인형을 떨어뜨려 주변을 기절시키고 함께 싸운다',fx:[['blast',{R:200,dmg:110,fz:1.2}],['pet',{n:1,s:12,dmg:60}]]},
  velion:{name:'강탈',icon:'🎭',desc:'가장 가까운 적의 궁극기를 빼앗아 그대로 쓴다 (생존 모드에서는 무작위 생존자의 궁극기)',fx:[['hijack',{}]]},
  kagero:{name:'완벽한 처형',icon:'🌑',desc:'적을 꿰뚫으며 돌진하고, 10초 안에 한 번 더 써서 잃은 체력 비례 처형 돌진',combo:[[['chain',{n:1,dmg:120,range:450}]],[['chain',{n:1,dmg:120,range:520,exe:1.5}]]],win:10},
+ cheongun:{name:'용의 분노',icon:'🐲',desc:'회축으로 적을 멀리 걷어차 날려버리고 기절시킨다',fx:[['slam',{R:105,dmg:170,fz:0.9}],['blast',{R:130,dmg:40,kb:600,c:'255,160,60'}]]},
+ rena:{name:'추방자의 검',icon:'⚔️',desc:'검을 각성해 10초간 공격력 증가, 다시 쓰면 거대한 검기를 날린다',combo:[[['power',{s:10,m:1.25}],['haste',{s:3,m:1.2}]],[['slam',{L:420,w:75,dmg:150,sweet:1.3}]]],win:10},
+ grab:{name:'정전기장',icon:'⚡',desc:'주변에 전기 폭발 · 적을 기절시키고 탄환 제거',fx:[['blast',{R:230,dmg:120,fz:0.8,c:'255,230,80'}],['clear',{R:230}]]},
+ nemea:{name:'영혼의 족쇄',icon:'⛓️',desc:'주변 적들을 사슬로 묶고, 2.5초 뒤 끊어지지 않으면 기절',fx:[['zap',{n:3,dmg:90,range:400}],['delay',{t:2.5,fx:[['zap',{n:3,dmg:60,range:460,fz:1.5}]]}]]},
+ kate:{name:'비장의 한 발',icon:'🎯',desc:'가장 가까운 적을 조준해 막을 수 없는 한 발',fx:[['zap',{n:1,dmg:300,range:900,exe:0.6}]]},
+ veil:{name:'결전의 시간',icon:'🌙',desc:'8초간 공격력·이동 속도 증가 · 구르면 은신',fx:[['power',{s:8,m:1.3}],['haste',{s:8,m:1.2}],['stealth',{s:1}]]},
+ pio:{name:'미끼 던지기',icon:'🦈',desc:'물고기를 던지고, 잠시 뒤 상어가 솟구쳐 적을 날려버린다',fx:[['rocket',{dmg:170,R:200,range:700,fz:1.2}]]},
+ naia:{name:'사냥본능',icon:'🦋',desc:'가까운 적 옆으로 순간이동하고 잠깐 무적',fx:[['chain',{n:1,dmg:70,range:650}],['shield',{s:1.2}],['power',{s:3,m:1.3}]]},
+ narak:{name:'깊은 바다의 처형',icon:'🌊',desc:'X자 처형 · 체력이 낮은 적일수록 아프다 · 8초 안에 한 번 더',combo:[[['zap',{n:1,dmg:150,range:520,exe:1.8}]],[['zap',{n:1,dmg:150,range:520,exe:1.8}]]],win:8},
+ dogyeom:{name:'쇼스토퍼',icon:'🤼',desc:'적을 붙잡아 들어 올린 뒤 땅에 내리꽂는다',fx:[['chain',{n:1,dmg:120,range:400,fz:0.6}],['delay',{t:0.4,fx:[['blast',{R:175,dmg:95,kb:320,c:'255,90,70'}]]}]]},
+ siren:{name:'해일',icon:'🌊',desc:'거대한 해일로 앞의 모든 적을 띄우고 늦춘다',fx:[['slam',{L:720,w:80,dmg:125,fz:1.2}]]},
+ lorenzo:{name:'커튼콜',icon:'🎆',desc:'네 발의 저격탄을 연속 발사 · 마지막 탄이 가장 아프다',fx:[['repeat',{s:2.2,iv:0.55,fx:[['snipe',{n:1,dmg:170}]]}]]},
+ haku:{name:'운명 봉인',icon:'🌀',desc:'일직선으로 베며 돌진해 적들을 끌어모아 띄운다',fx:[['slam',{L:470,w:70,dmg:145,sweet:1.2,fz:0.9}],['blink',{d:400}]]},
+ chrono:{name:'시공간 붕괴',icon:'⏪',desc:'4초 전 위치로 되돌아가 체력을 회복하고 주변 폭발',fx:[['rewind',{t:4,p:0.3}],['blast',{R:170,dmg:120,c:'0,210,211'}]]},
+ angler:{name:'폭뢰',icon:'💣',desc:'적에게 폭뢰를 보내 큰 피해와 1.6초 기절',fx:[['rocket',{dmg:130,R:130,range:650,fz:1.6}]]},
  sola:{name:'태양 섬광',icon:'☀️',desc:'멀리 태양빛을 내리꽂아 큰 피해 + 1.6초 기절',fx:[['rocket',{dmg:150,R:220,range:700,fz:1.6}]]},
  karn:{name:'세계의 종결자',icon:'🌑',desc:'8초간 거대화 · 공격력/이동 속도 증가 · 흡혈 대폭 강화 · 주변 적 공포 · 그동안 한 번 쓰러지면 부활',fx:[['freeze',{R:260,s:0.9}],['giant',{s:8}],['power',{s:8,m:1.3}],['haste',{s:8,m:1.2}],['ulifesteal',{s:8,p:0.1}],['revive',{s:8}]]},
  amara:{name:'공개 처형',icon:'👑',desc:'멀리 있는 적에게 날아가 붙잡아 제압한 뒤 땅에 내리찍는다',fx:[['chain',{n:1,dmg:220,range:650,fz:1.2}],['delay',{t:0.5,fx:[['blast',{R:200,dmg:120,kb:350}]]}]]},
@@ -1081,6 +1171,7 @@ function freezeArea(x,y,R,s){for(const e of query(x,y,R+60)){if((e.x-x)**2+(e.y-
 function gadgetS(list){for(const [k,o] of list){switch(k){
  case 'heal':{const h=Math.round(P.maxHp*o.p*(P.char.id==='luna'?1.5:1));P.hp=Math.min(P.maxHp,P.hp+h);addText(P.x,P.y-30,'+'+h,'#5dff9a',true);burst(P.x,P.y,'#5dff9a',14,150,3);break}
  case 'shield':P.inv=Math.max(P.inv,o.s);P.shieldT=Math.max(P.shieldT,o.s);break;
+ case 'rewind':{const H=G.hist||[];const tt=G.t-o.t;const e=H.find(h=>h[0]>=tt)||H[0];if(e){G.ghosts.push({x:P.x,y:P.y,f:P.face,life:0.5});burst(P.x,P.y,P.char.color,16,200,3);P.x=e[1];P.y=e[2];P.inv=Math.max(P.inv,0.3)}if(o.p){const h=Math.round(P.maxHp*o.p);P.hp=Math.min(P.maxHp,P.hp+h);addText(P.x,P.y-30,'+'+h,'#5dff9a',true)}burst(P.x,P.y,'#ffffff',18,220,3);sfx.dash();break}
  case 'blink':{const l=Math.hypot(P.ddx,P.ddy)||1;G.ghosts.push({x:P.x,y:P.y,f:P.face,life:0.35});burst(P.x,P.y,P.char.color,10,150,3);P.x+=P.ddx/l*o.d;P.y+=P.ddy/l*o.d;P.inv=Math.max(P.inv,0.3);burst(P.x,P.y,P.char.color,14,180,3);sfx.dash();break}
  case 'blast':G.fx.push({k:'boom',x:P.x,y:P.y,r:o.R,t:0,dur:0.4,c:o.c});aoe(P.x,P.y,o.R,o.dmg*gs(),'gadget',o.kb||0);if(o.fz)freezeArea(P.x,P.y,o.R,o.fz);shake(5);sfx.boom();break;
  case 'rapid':P.rapidT=Math.max(P.rapidT,o.s);break;
@@ -1206,7 +1297,7 @@ const joy={id:null,ox:0,oy:0,x:0,y:0};
 const DASH_T=0.24,DASH_V=820;
 function tryDash(){if(state!=='play'||!G||G.dead||G.won||P.dashCd>0)return;const l=Math.hypot(P.ddx,P.ddy)||1;P.dashDx=P.ddx/l;P.dashDy=P.ddy/l;P.dashT=DASH_T;P.inv=Math.max(P.inv,0.3);P.dashCd=P.dashMax;sfx.dash();burst(P.x,P.y,P.char.color,10,120,3)}
 function update(dt){
- G.t+=dt;
+ G.t+=dt;G.htT=(G.htT||0)-dt;if(G.htT<=0){G.htT=0.2;(G.hist||(G.hist=[])).push([G.t,P.x,P.y]);if(G.hist.length>26)G.hist.shift()}
  if(!G.dead){
   let mx=0,my=0;if(keys.KeyW||keys.ArrowUp)my-=1;if(keys.KeyS||keys.ArrowDown)my+=1;if(keys.KeyA||keys.ArrowLeft)mx-=1;if(keys.KeyD||keys.ArrowRight)mx+=1;
   if(joy.id!==null){const jx=joy.x-joy.ox,jy=joy.y-joy.oy,l=Math.hypot(jx,jy);if(l>8){const k=Math.min(1,l/55);mx=jx/l*k;my=jy/l*k}}
@@ -1295,11 +1386,11 @@ const SIGW={knight:['orbit','성검 방패진','🛡️',{},'#5ef2ff'],mage:['bo
  kit:['kunai','수리검','✴️',{},'#6c5ce7'],titan:['cleave','처형 대검','⚔️',{d:1.2,c:1.2,r:1.1},'#c0392b'],necro:['bolt','영혼 구슬','💀',{},'#9b59b6'],ciel:['kunai','서리 화살','🏹',{p:1},'#7fd8ff'],
  kenji:['cleave','카타나','🗡️',{a:0.7,r:1.15,c:0.85,d:0.85},'#e8e8e8'],goliath:['orbit','바위 궤도','🪨',{d:1.1},'#8d6e63'],anchor:['boomer','거대한 닻','⚓',{d:1.15,c:1.1},'#2e86de'],lumi:['beam','프리즘 광선','🌈',{},'#fff59d'],
  arachne:['poison','거미줄 독','🕸️',{},'#7e57c2'],orbiter:['drone','궤도 위성','🛰️',{},'#80deea'],mira:['lightning','시간의 균열','⏳',{},'#ce93d8'],bear:['hammer','곰 발톱','🐾',{},'#a1887f'],
- karn:['cleave','피의 대검','🗡️',{d:1.2,c:1.25,r:1.2,a:0.8},'#c0162f'],amara:['cleave','쌍날 창','🔱',{c:0.85,d:0.9,r:1.1},'#d4a017'],yeou:['bolt','여우 구슬','🦊',{},'#ff7eb6'],charon:['boomer','사슬 낫','⛓️',{r:1.2},'#3dd9a5'],
+ karn:['cleave','피의 대검','🗡️',{d:1.05,c:1.25,r:1.2,a:0.8},'#c0162f'],amara:['cleave','쌍날 창','🔱',{c:0.85,d:0.9,r:1.1},'#d4a017'],yeou:['bolt','여우 구슬','🦊',{},'#ff7eb6'],charon:['boomer','사슬 낫','⛓️',{r:1.2},'#3dd9a5'],
  torch:['kunai','미니건','🔫',{c:0.75,d:0.8},'#4fc3f7'],ryuun:['cleave','바람의 검','🌬️',{a:0.6,r:1.25},'#9fd8ff'],brandt:['cleave','정의의 대검','⚖️',{d:1.1,r:1.1,a:1.15},'#4a7bd0'],luce:['beam','빛의 지팡이','💫',{},'#fff3a0'],
  moros:['hammer','운석 주먹','☄️',{},'#c08a5d'],shade:['kunai','그림자 표창','🌘',{},'#e0405e'],rei:['bolt','비전 건틀릿','✨',{},'#f5b041'],volk:['cleave','학살 도끼','🪓',{a:1.2,d:1.1,c:1.15},'#a52a2a'],
  veg:['bolt','암흑 구체','🌑',{},'#9b59b6'],karin:['kunai','작은 단검','🔪',{n:1,d:0.75,c:0.8},'#e74c3c'],ido:['cleave','우주 검','🗡️',{c:0.75,d:0.8,a:0.8},'#2ecc71'],ruby:['flame','불꽃 손','🔥',{},'#ff6f61'],
- sola:['cleave','태양 방패','🌅',{a:1.3,r:0.95},'#f39c12'],velion:['cleave','해방의 사슬','⛓️',{r:1.45,a:0.45},'#5b8cff'],kagero:['cleave','쌍낫','🌙',{c:0.8,d:0.85,a:1.1},'#b07cff'],omega:['bolt','심판의 홀','🪄',{d:1.5},'#ffd700']};
+ sola:['cleave','태양 방패','🌅',{a:1.3,r:0.95},'#f39c12'],velion:['cleave','해방의 사슬','⛓️',{r:1.45,a:0.45},'#5b8cff'],kagero:['cleave','쌍낫','🌙',{c:0.8,d:1.0,a:1.1},'#b07cff'],cheongun:['cleave','용권','👊',{r:0.85,c:0.75,d:1.05},'#ff9f43'],rena:['cleave','부러진 룬 대검','🗡️',{r:1.15,d:1.1},'#7bed9f'],grab:['hammer','증기 주먹','🦾',{c:0.95,d:1.15},'#f1c40f'],nemea:['bolt','어둠 구체','🟣',{d:1.35},'#8e44ad'],kate:['sniper','장총','🔭',{r:1.15,d:1.35},'#3498db'],veil:['bolt','은빛 석궁','🏹',{d:1.1,c:0.9},'#dfe6e9'],pio:['cleave','삼지창','🔱',{r:0.95,c:0.85,d:1.15},'#1abc9c'],naia:['bolt','공허 날개포','🦋',{n:1,d:0.8},'#be2edd'],narak:['cleave','작살','🦴',{r:1.1,a:0.7},'#48c9b0'],dogyeom:['hammer','강철 주먹','🥊',{r:0.85,c:0.8,d:0.9},'#e74c3c'],siren:['bolt','조류 지팡이','🫧',{d:1.15},'#48dbfb'],lorenzo:['sniper','속삭임','🎭',{c:1.0,d:1.45},'#c0392b'],haku:['cleave','쌍검','⚔️',{a:1.2,r:1.05,d:1.1},'#a29bfe'],chrono:['cleave','시간 배트','🏏',{r:1.05,d:1.3},'#00d2d3'],angler:['hammer','심해 닻','⚓',{r:1.2,c:1.1,d:1.1},'#2e86de'],omega:['bolt','심판의 홀','🪄',{d:1.5},'#ffd700']};
 function wb(id){const d=WDEF[id];return d&&d.base?d.base:id}
 function makeSig(cid,[base,name,icon,m,tc]){const B=WDEF[base];const id='s_'+cid;const L=B.L.map(l=>{const o=Object.assign({},l);if(o.dmg!=null)o.dmg=+(o.dmg*(m.d||1)).toFixed(1);if(o.dps!=null)o.dps=+(o.dps*(m.d||1)).toFixed(1);if(o.cd!=null)o.cd=+(o.cd*(m.c||1)).toFixed(2);if(o.R!=null)o.R=Math.round(o.R*(m.r||1));if(o.rg!=null)o.rg=Math.round(o.rg*(m.r||1));if(o.arc!=null)o.arc=+(o.arc*(m.a||1)).toFixed(2);if(o.n!=null&&m.n)o.n+=m.n;if(o.p!=null&&m.p)o.p+=m.p;return o});
  WDEF[id]={name,icon,info:B.info.slice(),L,base,sig:cid,tc,rm:m.r||1};WUPD[id]=WUPD[base];return id}
@@ -1311,6 +1402,8 @@ const ADMIN_CH={id:'omega',name:'오메가',title:'관리자 전용',emo:'👁�
  skill:{name:'최후의 심판',icon:'☠️',cd:0,desc:'맵 위의 모든 적이 즉사한다 (쿨타임 없음)',fx:[['wipe',{}]]},sk2:null,ult:null};
 CH.omega=ADMIN_CH;GS.omega={g:[{n:'관리자 순간이동',i:'✨',cd:2,d:'순간이동',fx:[['blink',{d:250}]]},{n:'관리자 보호막',i:'🛡️',cd:4,d:'2초 무적',fx:[['shield',{s:2}]]}],s:[{n:'관리자 권한',i:'👑',d:'모든 피해 +50%',fx:[['stat',{might:0.5}]]},{n:'관리자 체력',i:'❤️',d:'최대 체력 +100%',fx:[['stat',{hp:1}]]}]};
 ADMIN_CH.start=makeSig('omega',SIGW.omega);
+const OMEGA_MASK=Object.assign({},ADMIN_CH,{name:'???',title:'???',emo:'❔',color:'#8a8f98'});
+function chOf(id){const c=CH[id];return c&&c.admin&&!isAdmin?OMEGA_MASK:c}
 function visChars(){return isAdmin?CHARS.concat([ADMIN_CH]):CHARS}
 function tryAdmin(){const el=$('adminIn');if(!el)return;const v=el.value.trim();el.value='';if(strHash(v)===ADMIN_H){isAdmin=true;lsSet('nf_admin',1);toast('👁️ 관리자 인증 완료 — 오메가가 열렸어요');buildTitle()}else toast('관리자 코드가 올바르지 않아요')}
 function poolList(){const pool=[];
@@ -1580,7 +1673,7 @@ const Net={db:null,user:null,room:null,uid:null,lb:[],names:{},pending:new Set()
  render(){renderLB()},
  renderLobby(){const el=$('lobby');if(!el)return;if(!this.room){el.innerHTML=this.extFail?'<div class="lobbybox" style="border-color:rgba(255,120,140,.4)"><div class="t" style="color:#ff8aa0">📴 온라인 서버 연결 실패</div><div style="opacity:.7">인터넷 연결을 확인하고 새로고침해 주세요. 혼자 플레이와 봇 연습은 가능해요.</div></div>':(!window.claude&&this.lbState==='init'?'<div class="lobbybox"><div class="t">🌐 온라인 서버 연결 중…</div></div>':'');return}
   const ps=this.peers;if(!ps.length){el.innerHTML='<div class="lobbybox"><div class="t">🟢 지금 접속 중: 나 혼자</div><div style="opacity:.7">친구가 이 페이지를 열면 여기에 실시간으로 표시돼요</div></div>';return}
-  const seen=new Set();const rows=[];for(const p of ps){const key=p.by||p.peer;if(seen.has(key))continue;seen.add(key);const pr=p.presence||{};const ch=CH[pr.ch];
+  const seen=new Set();const rows=[];for(const p of ps){const key=p.by||p.peer;if(seen.has(key))continue;seen.add(key);const pr=p.presence||{};const ch=chOf(pr.ch);
    const st=pr.st==='play'?`플레이 중 ${ch?ch.emo:''} ${fmtTime(pr.t|0)} · ${fmtNum(pr.sc|0)}점`:pr.st==='over'?`방금 ${fmtNum(pr.sc|0)}점 기록`:'로비에서 대기 중';
    rows.push(`<div class="p"><span>${esc(this.name(p.by))}</span><span>${esc(st)}</span></div>`)}
   el.innerHTML=`<div class="lobbybox"><div class="t">🟢 지금 접속 중인 친구 ${seen.size}명</div>${rows.join('')}</div>`},
@@ -1600,14 +1693,14 @@ function renderLB(){
  if(Net.lbState==='off'){const loc=lsGet('nf_runs',[]);rows=loc.filter(r=>Net.lbTab==='all'||r.char===Net.lbTab).sort((a,b)=>b.score-a.score).slice(0,20).map(r=>({...r,id:'local',nm:'나 · '+new Date(r.at).toLocaleDateString('ko-KR')}))}
  else{rows=Net.lb.filter(r=>r.score>0).map(r=>Net.lbTab==='all'?r:(r.chars[Net.lbTab]?{...r,score:r.chars[Net.lbTab],char:Net.lbTab,_char:true}:null)).filter(Boolean).sort((a,b)=>b.score-a.score).slice(0,50)}
  if(!rows.length){$('lbList').innerHTML=`<div class="note">${Net.lbState==='ok'||Net.lbState==='off'?'아직 기록이 없어요. 첫 번째 주인공이 되어보세요!':''}</div>`;return}
- $('lbList').innerHTML=rows.map((r,i)=>{const c=CH[r.char]||CHARS[0];const me=r.id===Net.uid;const sub=r._char?`${c.emo} ${c.name} 최고 기록 · 총 ${r.runs}판`:`${c.emo} ${c.name} · ${fmtTime(r.time)} · ${fmtNum(r.kills)}처치 · Lv${r.lvl}`;
+ $('lbList').innerHTML=rows.map((r,i)=>{const c=chOf(r.char)||CHARS[0];const me=r.id===Net.uid;const sub=r._char?`${c.emo} ${c.name} 최고 기록 · 총 ${r.runs}판`:`${c.emo} ${c.name} · ${fmtTime(r.time)} · ${fmtNum(r.kills)}처치 · Lv${r.lvl}`;
   return `<div class="lbrow ${me?'me':''}"><div class="rk">${i+1}</div><div style="min-width:0"><div class="nm">${esc(r.nm||Net.name(r.id))}${r.diff==='nm'&&!r._char?'<span class="badge nm">악몽</span>':''}${r.win&&!r._char?'<span class="badge win">새벽</span>':''}</div><div class="sub">${esc(sub)}</div></div><div class="sc">${fmtNum(r.score)}</div></div>`}).join('')}
 $('lbTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;Net.lbTab=b.dataset.k;renderLB()});
 
 /* ================= SCREENS ================= */
 const previews={};let detailCv=null;
-const BOTDATA={velion:[45,491,'all'],knight:[41,289,'all'],mage:[38,215,'pvp'],hunter:[5,257,'pve'],volt:[39,302,'all'],igna:[5,255,'pve'],rina:[16,267,'pve'],bruno:[9,581,'pve'],luna:[10,381,'pve'],jack:[12,388,'pve'],raven:[34,246,'pvp'],gear:[48,249,'pvp'],viper:[23,391,'pve'],rex:[10,342,'pve'],mina:[21,286,'pve'],zephyr:[19,179,'pvp'],soya:[7,230,'pro'],iron:[40,514,'all'],scope:[16,180,'pvp'],blaze:[26,281,'pvp'],harmony:[14,376,'pve'],kit:[22,196,'pvp'],titan:[22,488,'pve'],necro:[20,199,'pvp'],ciel:[15,196,'pro'],kenji:[39,259,'pvp'],goliath:[40,257,'pvp'],anchor:[51,268,'pvp'],lumi:[25,164,'pvp'],arachne:[28,283,'all'],orbiter:[16,220,'pvp'],mira:[38,176,'pvp'],bear:[48,645,'all'],karn:[39,598,'all'],amara:[50,310,'all'],yeou:[14,260,'pve'],charon:[46,254,'pvp'],torch:[34,458,'all'],ryuun:[44,199,'pvp'],brandt:[3,569,'pve'],luce:[8,252,'pve'],moros:[32,304,'all'],shade:[28,247,'pvp'],rei:[18,184,'pvp'],volk:[17,544,'pve'],veg:[35,198,'pvp'],karin:[13,189,'pro'],ido:[17,312,'pve'],ruby:[15,250,'pve'],sola:[19,272,'pve']};
-const BOT_GAMES={pvp:1176,pve:294};
+const BOTDATA={knight:[41,289,'all'],mage:[27,215,'pvp'],hunter:[5,257,'pro'],volt:[29,302,'all'],igna:[8,255,'pro'],rina:[20,267,'pvp'],bruno:[12,581,'pve'],luna:[4,381,'pve'],jack:[8,388,'pve'],raven:[32,246,'pvp'],gear:[41,249,'pvp'],viper:[21,391,'all'],rex:[10,342,'pve'],mina:[24,286,'all'],zephyr:[12,179,'pro'],soya:[12,230,'pro'],iron:[55,514,'all'],scope:[6,180,'pro'],blaze:[26,281,'all'],harmony:[10,376,'pve'],kit:[8,196,'pro'],titan:[48,488,'all'],necro:[19,199,'pro'],ciel:[6,196,'pro'],kenji:[53,259,'pvp'],goliath:[52,257,'pvp'],anchor:[39,268,'pvp'],lumi:[15,164,'pro'],arachne:[17,283,'pve'],orbiter:[7,220,'pro'],mira:[18,176,'pro'],bear:[45,645,'all'],karn:[56,598,'all'],amara:[52,310,'all'],yeou:[6,260,'pro'],charon:[32,254,'pvp'],torch:[18,458,'pve'],ryuun:[53,199,'pvp'],brandt:[34,569,'all'],luce:[6,252,'pro'],moros:[52,304,'all'],shade:[12,247,'pro'],rei:[25,184,'pvp'],volk:[21,544,'all'],veg:[17,198,'pro'],karin:[30,189,'pvp'],ido:[21,312,'all'],ruby:[9,250,'pro'],velion:[46,491,'all'],kagero:[27,582,'all'],cheongun:[24,720,'all'],rena:[37,512,'all'],grab:[43,257,'pvp'],nemea:[40,281,'all'],kate:[15,176,'pro'],veil:[26,151,'pvp'],pio:[29,272,'all'],naia:[41,247,'pvp'],narak:[18,174,'pro'],dogyeom:[38,360,'all'],siren:[14,520,'pve'],lorenzo:[26,178,'pvp'],haku:[17,546,'pve'],chrono:[12,555,'pve'],angler:[42,274,'all'],sola:[20,272,'all']};
+const BOT_GAMES={pvp:1584,pve:326};
 const BEGIN=['bear','iron','knight','volt','torch'];
 const TAGS={all:{i:'⭐',n:'만능',d:'대전과 생존 모두 강함'},pvp:{i:'⚔️',n:'대전형',d:'친구와 싸울 때 강함'},pve:{i:'🌙',n:'생존형',d:'생존 모드에서 오래 버팀'},pro:{i:'🎓',n:'숙련자용',d:'다루기 어렵지만 손에 익으면 강함'}};
 function fxAll(list,mul=1,out=[]){for(const [k,o] of (list||[])){if(k==='repeat'){fxAll(o.fx,mul*Math.max(1,Math.round(o.s/o.iv)),out)}else if(k==='delay'){fxAll(o.fx,mul,out)}else out.push([k,o,mul])}return out}
@@ -1793,7 +1886,7 @@ function pvBurst(x,y,c,n,sp=180,s=3){for(let i=0;i<n;i++){const a=Math.random()*
 function pvText(x,y,v,c,big){if(PV.texts.length>50)PV.texts.shift();PV.texts.push({x,y,v:String(Math.round(v)),c,big,life:0.8,max:0.8,vy:-50})}
 function pvFeed(txt){PV.feed.push({txt,t:5});if(PV.feed.length>4)PV.feed.shift();renderFeed()}
 function applyStar(f){const ss=fstat(f.star,charT(f.ch));f.maxHp=Math.round(f.ch.hp*PV_HP*(1+(ss.hp||0)));f.armor=f.ch.armor+(ss.armor||0);f.regen=f.ch.regen+(ss.regen||0)*0.6;f.crit=f.ch.crit+(ss.crit||0);f.dashMax=f.ch.dash*(1-(ss.dash||0));f.ultMul=1-(ss.ult||0);f.spdMul=1+(ss.spd||0);f.mightMul=1+(ss.might||0)+(ss.area||0)*0.4;f.cdMul=1-(ss.cd||0);f.extra=ss.extra||0;f.ucMul=1+(ss.uc||0);f.s2Mul=1-(ss.s2||0)}
-function mkFighter(id,chId,local,spawnIdx,o={}){const ch=CH[chId]||CHARS[0];const [sx,sy]=ARENA.spawns[spawnIdx%4];const hp=Math.round(ch.hp*PV_HP);const L=o.load||getLoad(ch.id);
+function mkFighter(id,chId,local,spawnIdx,o={}){const ch=chOf(chId)||CHARS[0];const [sx,sy]=ARENA.spawns[spawnIdx%4];const hp=Math.round(ch.hp*PV_HP);const L=o.load||getLoad(ch.id);
  return{id,by:o.by||null,bot:!!o.bot,name:o.name||'',ch,local,x:sx,y:sy,tx:sx,ty:sy,vx:0,vy:0,kx:0,ky:0,face:Math.atan2(-sy,-sx),moving:false,hp,maxHp:hp,alive:true,respawnT:0,inv:2,dashT:0,dashCd:0,dashMax:ch.dash,ddx:-Math.sign(sx),ddy:0,dashDx:0,dashDy:0,
   skillCd:8,kills:0,deaths:0,w:o.w||(ch.start==='random'?pick(Object.keys(WDEF)):ch.start),wl:1,mm:1,wt:0.6,wa:0,blades:[],frozenT:0,slowT:0,rageT:0,shieldT:0,critT:0,stormT:0,stormA:0,stormAcc:0,teslaT:0,teslaAcc:0,lastHit:null,flash:0,oh:{},ah:{},ghostT:0,ghosts:[],spawnIdx,strafe:1,strafeT:0,gone:false,r0:14,gi:L.g,si:L.s,gad:GS[ch.id].g[L.g],star:GS[ch.id].s[L.s],gadCd:4,rapidT:0,hasteT:0,hasteM:1,rexT:0,rexA:0,rexAcc:0,swUsed:false,dbPend:false,drones:[],sk2Cd:5,uc:0,reps:[],powT:0,powM:1,ammo:3,ammoT:0,fireGap:0,aimT:0,aimA:0}}
 function mkF(...a){const f=mkFighter(...a);applyStar(f);f.hp=f.maxHp;return f}
@@ -2078,8 +2171,8 @@ function pvSkillTrait(f){f.revealT=1.2;const sa=pS(f,'skillamp');if(sa){f.amp=sa
 function pvOnSkill(f){pvSkillTrait(f);if(f.ch.id==='velion')pvGx(f,[['blast',{R:120,dmg:25,c:'90,140,255'}]]);if(f.ch.id==='amara'){pvGx(f,[['blink',{d:90}]]);f.critT=Math.max(f.critT,1.0)}if(f.ch.id==='raven')f.critT=Math.max(f.critT,1.0);if(f.ch.id==='zephyr')pvEmit(f,{w:'tornado',x:r1(f.x),y:r1(f.y),a:r2(f.face),R:55,dps:r2(8*pvMight(f)),dur:2.2})}
 function pvSkill2(f){if(!f||!f.alive||f.sk2Cd>0||PV.phase!=='fight'||!f.ch.sk2)return;f.sk2Cd=f.ch.sk2.cd*(f.cdMul||1)*(f.s2Mul||1);pvOnSkill(f);{const db=pS(f,'dashblast');if(db)pvGx(f,[['blast',db]])}if(f.id===PV.myId){sfx.skill();toast(f.ch.sk2.icon+' '+f.ch.sk2.name)}pvGx(f,f.ch.sk2.fx,false,1)}
 function ultSplash(c){const o={c:c.color,emo:c.emo,t:0};if(state==='pvp')PV.splash=o;else if(G)G.splash=o}
-function drawSplash(o,dt){if(!o)return null;o.t+=dt;const k=o.t/0.9;if(k>=1)return null;const a=k<0.15?k/0.15:1-(k-0.15)/0.85;ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);ctx.globalAlpha=0.35*a;const gr=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.2,W/2,H/2,Math.max(W,H)*0.75);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,o.c);ctx.fillStyle=gr;ctx.fillRect(0,0,W,H);
- ctx.globalAlpha=a;ctx.fillStyle=hexA(o.c,0.35);const y=H*0.32;ctx.fillRect(0,y-38,W,76);ctx.font=`${Math.round(60+k*20)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(o.emo,W/2-(1-k)*80+40,y);ctx.restore();return o}
+function drawSplash(o,dt){if(!o)return null;o.t+=dt;const k=o.t/0.7;if(k>=1)return null;const a=k<0.15?k/0.15:1-(k-0.15)/0.85;ctx.save();ctx.setTransform(DPR,0,0,DPR,0,0);ctx.globalAlpha=0.35*a;const gr=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.2,W/2,H/2,Math.max(W,H)*0.75);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,o.c);ctx.fillStyle=gr;ctx.fillRect(0,0,W,H);
+ ctx.globalAlpha=a;const y=H*0.45;const sg=ctx.createLinearGradient(0,0,W,0);sg.addColorStop(0,hexA(o.c,0));sg.addColorStop(0.5,hexA(o.c,0.22));sg.addColorStop(1,hexA(o.c,0));ctx.fillStyle=sg;ctx.fillRect(0,y-46,W,92);ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(0,y-46,W,2);ctx.fillRect(0,y+44,W,2);ctx.font=`${Math.round(64+k*16)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=a*0.35;ctx.fillText(o.emo,Math.max(48,W/2-250)-(1-k)*60,y);ctx.restore();return o}
 function pvUlt(f){if(!f||!f.alive||PV.phase!=='fight'||!f.ch.ult)return;const u=f.ch.ult;
  if(u.combo){let i=0;if(f.cmbR&&PV.t<f.cmbR.until)i=f.cmbR.i;else{if(!(f.uc>=1))return;f.uc=0;if(f.id===PV.myId){sfx.boss();banner(u.icon+' '+u.name,'gold','궁극기!')}else pvFeed(`${f.ch.emo} ${pvName(f)}: ${u.icon} ${u.name}!`)}pvGx(f,u.combo[i],'u2',0.8);i++;f.cmbR=i<u.combo.length?{i,until:PV.t+(u.win||10)}:null;return}
  if(!(f.uc>=1))return;f.uc=0;pvSkillTrait(f);if(f.id===PV.myId){ultSplash(f.ch);sfx.boss();banner(u.icon+' '+u.name,'gold','궁극기!');PV.shake=Math.max(PV.shake,10)}else pvFeed(`${f.ch.emo} ${pvName(f)}: ${u.icon} ${u.name}!`);
@@ -2105,6 +2198,7 @@ function pvGx(f,list,ult,dm=1){const m=pvMight(f)*dm;const tgt=nearestFoe(f,600)
  case 'healmiss':f.hp=Math.min(f.maxHp,f.hp+(f.maxHp-f.hp)*o.p*0.8);pvBurst(f.x,f.y,'#5dff9a',12,140,3);break;
  case 'hijack':{const t2=nearestFoe(f,750,true);const src=t2&&t2.ch&&t2.ch.ult&&t2.ch.id!=='velion'?t2.ch:pick(CHARS.filter(c=>c.id!=='velion'&&c.ult));const u=src.ult;
   if(f.id===PV.myId)toast(`🎭 ${src.emo} ${src.name}의 ${u.icon} ${u.name} 강탈!`);else pvFeed(`${f.ch.emo} ${pvName(f)} 🎭 ${src.emo} ${u.name} 강탈!`);PV.fx.push({k:'ring',x:f.x,y:f.y,t:0,dur:0.6,c:src.color});pvGx(f,u.combo?u.combo[0]:u.fx,ult,dm);break}
+ case 'rewind':{const H=f.hist||[];const tt=PV.t-o.t;let e=H.find(h=>h[0]>=tt)||H[0];if(e){f.ghosts.push({x:f.x,y:f.y,f:f.face,life:0.5});pvBurst(f.x,f.y,f.ch.color,16,200,3);f.x=e[1];f.y=e[2];pvCollide(f);f.inv=Math.max(f.inv,0.3)}if(o.p)f.hp=Math.min(f.maxHp,f.hp+f.maxHp*o.p);PV.fx.push({k:'ring',x:f.x,y:f.y,t:0,dur:0.5,c:f.ch.color});pvBurst(f.x,f.y,'#ffffff',18,220,3);break}
  case 'cdcut':f.sk2Cd=Math.max(0,f.sk2Cd-o.s);f.gadCd=Math.max(0,f.gadCd-o.s);break;
  case 'delay':f.reps.push({t:o.t+0.01,iv:o.t,acc:0,fx:o.fx,dm});break;
  case 'ulifesteal':f.lsT=Math.max(f.lsT||0,o.s);f.lsP=o.p;break;
@@ -2146,6 +2240,7 @@ function pvMove(f,mx,my,dt){if(f.frozenT>0||PV.phase!=='fight'){mx=0;my=0}const 
  if(f.dashT>0){const dv=DASH_V*Math.max(0.18,f.dashT/DASH_T);f.dashT-=dt;f.vx=f.dashDx*dv;f.vy=f.dashDy*dv;f.ghostT-=dt;if(f.ghostT<=0){f.ghostT=0.03;f.ghosts.push({x:f.x,y:f.y,f:f.face,life:0.28})}if(f.dashT<=0&&f.dbPend){f.dbPend=false;const o=pS(f,'dashblast');if(o)pvGx(f,[['blast',o]])}}else{f.vx=mx*spd;f.vy=my*spd}
  f.x+=(f.vx+f.kx)*dt;f.y+=(f.vy+f.ky)*dt;const k=Math.pow(0.002,dt);f.kx*=k;f.ky*=k;pvCollide(f)}
 function pvTickLocal(f,dt){
+ f.htT=(f.htT||0)-dt;if(f.htT<=0&&f.alive){f.htT=0.2;(f.hist||(f.hist=[])).push([PV.t,f.x,f.y]);if(f.hist.length>26)f.hist.shift()}
  for(const k of['inv','dashCd','skillCd','frozenT','slowT','rageT','shieldT','critT','gadCd','rapidT','hasteT','poisonT','stealthT','giantT','sk2Cd','powT','lsT','revT','empT'])if(f[k]>0)f[k]-=dt;
  {const br=pS(f,'barrier');if(br)f.brCh=Math.min(br.cd,(f.brCh||0)+dt*(br.move?(f.moving?1:0):1));if(pS(f,'perse')&&f.alive&&PV.t-(f.lastHurt||-9)>4)f.hp=Math.min(f.maxHp,f.hp+f.maxHp*0.025*dt)}
  if(f.cmbQ&&PV.t>=f.cmbQ.until){f.cmbQ=null;f.skillCd=f.ch.skill.cd*(f.ultMul||1)}if(f.cmbR&&PV.t>=f.cmbR.until)f.cmbR=null;if(f.r0>14&&!(f.giantT>0))f.r0=14;
@@ -2275,7 +2370,7 @@ function pvSyncRemote(dt){const peers=PV.room?PV.room.peers():[];const seen=new 
  for(const p of peers){if(p.sameTab||p.kind!=='viewer')continue;const f=PV.fs.find(x=>x.id===p.peer);if(!f)continue;seen.add(p.peer);const pr=p.presence||{};if(pr.st!=='fight')continue;
   const num=(v,d)=>Number.isFinite(Number(v))?Number(v):d;
   {const vx=clamp(num(pr.vx,0),-900,900),vy=clamp(num(pr.vy,0),-900,900);f.vx=vx;f.vy=vy;pvAddSample(f,num(pr.ts,NaN),num(pr.x,f.tx),num(pr.y,f.ty),vx,vy)}f.face=num(pr.f,f.face);f.moving=!!pr.mv;
-  if(CH[pr.ch]&&f.ch.id!==pr.ch)f.ch=CH[pr.ch];{const si=pr.si===1?1:0,gi=pr.gi===1?1:0;if(f.si!==si||f.gi!==gi||!f.star){f.si=si;f.gi=gi;f.star=GS[f.ch.id].s[si];f.gad=GS[f.ch.id].g[gi]}}if(WDEF[pr.w])f.w=pr.w;f.wl=clamp(num(pr.wl,1)|0,1,5);f.mm=clamp(num(pr.mm,1),0.5,4);
+  if(CH[pr.ch]&&f.ch.id!==pr.ch)f.ch=chOf(pr.ch);{const si=pr.si===1?1:0,gi=pr.gi===1?1:0;if(f.si!==si||f.gi!==gi||!f.star){f.si=si;f.gi=gi;f.star=GS[f.ch.id].s[si];f.gad=GS[f.ch.id].g[gi]}}if(WDEF[pr.w])f.w=pr.w;f.wl=clamp(num(pr.wl,1)|0,1,5);f.mm=clamp(num(pr.mm,1),0.5,4);
   const hp=clamp(num(pr.hp,f.hp),0,999);f.hp=hp;f.maxHp=clamp(num(pr.mx,f.maxHp),1,999);
   const al=!!pr.al;if(f.alive&&!al){pvBurst(f.x,f.y,f.ch.color,40,300,4)}if(!f.alive&&al){f.buf=null;f.x=num(pr.x,f.x);f.y=num(pr.y,f.y);f.tx=f.x;f.ty=f.y}f.alive=al;
   f.kills=clamp(num(pr.k,0)|0,0,99);f.deaths=clamp(num(pr.d,0)|0,0,99);f.dd=clamp(num(pr.dd,0),0,1e6);f.crown=pr.cr===2?2:pr.cr?1:0;f.inv=pr.iv?0.1:0;f.shieldT=pr.sh?0.1:0;f.rageT=pr.rg?0.1:0;f.frozenT=pr.fz?0.1:0;f.stealthT=pr.sl?0.1:0;f.giantT=pr.gt?0.1:0;f.r0=pr.gt?20:14;if(pr.uid&&!f.by)f.by=String(pr.uid).slice(0,128)}
@@ -2348,18 +2443,18 @@ function pvExit(){if(state==='pvp'&&PV.phase!=='over'&&PV.mode==='online'){pvPre
 
 /* ---- UI ---- */
 function openPvp(){state='pvplobby';$('hud').classList.add('hidden');showScreen('pvpScreen');PV.phase='idle';if(PV.room){PV.ready=false;pvPresence('lobby')}renderPvp();Net.presence({st:'menu'})}
-function renderPvp(){const el=$('pvpBody');if(!el)return;const c=CH[selChar];const MB=PV.sel==='moba';
+function renderPvp(){const el=$('pvpBody');if(!el)return;const c=CH[selChar];const MB=PV.sel==='moba',RD=PV.sel==='raid';
  const chips=visChars().slice().sort((a,b)=>(BOTDATA[b.id]?BOTDATA[b.id][0]:0)-(BOTDATA[a.id]?BOTDATA[a.id][0]:0)).map(x=>`<button data-c="${x.id}" class="${x.id===selChar?'sel':''}" style="--c:${x.color}" title="${x.name} · 봇 대전 승률 ${(BOTDATA[x.id]||[0])[0]}%">${x.emo}${(BOTDATA[x.id]||[])[2]==='pvp'||(BOTDATA[x.id]||[])[2]==='all'?'<i class="pvt">'+TAGS[BOTDATA[x.id][2]].i+'</i>':''}</button>`).join('');
  let room='';
  if(!Net.room)room=`<div class="note">${Net.extFail?'📴 온라인 서버에 연결하지 못했어요. 인터넷을 확인하고 새로고침해 주세요.':window.claude?'🌐 온라인 대전은 이 게임을 편집 권한으로 공유받은 친구끼리 할 수 있어요.':'🌐 온라인 서버 연결 중…'}<br>지금은 봇 연습만 가능해요.</div>`;
  else if(!PV.room)room=`<div class="pvbox"><div class="pvh">🌐 친구와 온라인 대전</div><div class="row"><button class="btn gold" id="pvCreate">방 만들기</button></div><div class="row"><input id="pvCode" maxlength="6" placeholder="방 코드 입력" autocomplete="off"><button class="btn ghost" id="pvJoinBtn">입장</button></div>${PV.joining?'<div class="note">입장 중…</div>':''}</div>`;
  else{const ros=pvRoster();const mine=pvMyPeer();const inFight=ros.filter(p=>p.st==='fight').length;
   room=`<div class="pvbox"><div class="pvh">방 코드</div><div class="pvcode bh">${esc(PV.code)}</div><div class="note">친구에게 이 코드를 알려주세요 · ${MB?'최대 6명 · 팀은 자동으로 나뉘고 빈자리는 봇이 채워요':'최대 4명'}</div>
-  <div class="pvlist">${ros.map((p,i)=>`<div class="pvp ${p.me?'me':''}"><span>${MB?(ros.map(x=>x.peer).sort().indexOf(p.peer)%2?'🔴 ':'🔵 '):''}${CH[p.me?selChar:p.ch].emo} ${esc(p.me?'나':Net.name(p.by))}</span><span>${p.st==='fight'?'⚔ 전투 중':p.rdy||(p.me&&PV.ready)?'✅ 준비':'⏳ 대기'}</span></div>`).join('')}</div>
+  <div class="pvlist">${ros.map((p,i)=>`<div class="pvp ${p.me?'me':''}"><span>${MB?(ros.map(x=>x.peer).sort().indexOf(p.peer)%2?'🔴 ':'🔵 '):''}${chOf(p.me?selChar:p.ch).emo} ${esc(p.me?'나':Net.name(p.by))}</span><span>${p.st==='fight'?'⚔ 전투 중':p.rdy||(p.me&&PV.ready)?'✅ 준비':'⏳ 대기'}</span></div>`).join('')}</div>
   ${inFight?'<div class="note">이전 경기가 아직 진행 중인 사람이 있어요</div>':''}
   <div class="row"><button class="btn ghost" id="pvReady">${PV.ready?'준비 취소':'✅ 준비 완료'}</button><button class="btn gold" id="pvStart" ${ros.length<2?'disabled':''}>${RD?'👹 레이드 시작':MB?'🏰 3vs3 시작':'⚔ 난투 시작'}</button></div>
   <div class="row"><button class="btn ghost" id="pvLeaveBtn">방 나가기</button></div></div>`}
- const RD=PV.sel==='raid';el.innerHTML=`<div class="gmseg"><button data-gm="moba" class="${MB?'sel':''}"><b>🏰 본진 공략전</b><small>3 vs 3 · 넥서스 파괴</small></button><button data-gm="ffa" class="${!MB&&!RD?'sel':''}"><b>⚔️ 난투</b><small>개인전 · ${PVP_KO}킬 먼저</small></button><button data-gm="raid" class="${RD?'sel':''}"><b>👹 레이드</b><small>협동 보스전 · 한정 보상</small></button></div>${RD?`<div class="note">👹 <b>심연의 군주</b>를 4분 안에 함께 쓰러뜨리세요 · 첫 클리어 보상 <b>👑 황금 왕관</b>(모든 모드에서 머리 위 표시) + <b>❤️ 용의 심장</b>(생존 모드 최대 체력 +12%) · 150초 이내 클리어 시 <b>🔥 불꽃 왕관</b> · 현재 ${raidData().c}회 클리어</div>`:''}
+ el.innerHTML=`<div class="gmseg"><button data-gm="moba" class="${MB?'sel':''}"><b>🏰 본진 공략전</b><small>3 vs 3 · 넥서스 파괴</small></button><button data-gm="ffa" class="${!MB&&!RD?'sel':''}"><b>⚔️ 난투</b><small>개인전 · ${PVP_KO}킬 먼저</small></button><button data-gm="raid" class="${RD?'sel':''}"><b>👹 레이드</b><small>협동 보스전 · 한정 보상</small></button></div>${RD?`<div class="note">👹 <b>심연의 군주</b>를 4분 안에 함께 쓰러뜨리세요 · 첫 클리어 보상 <b>👑 황금 왕관</b>(모든 모드에서 머리 위 표시) + <b>❤️ 용의 심장</b>(생존 모드 최대 체력 +12%) · 150초 이내 클리어 시 <b>🔥 불꽃 왕관</b> · 현재 ${raidData().c}회 클리어</div>`:''}
  <div class="note">⚔️·⭐ 표시 = 대전에서 강한 생존자 (봇 대전 승률 높은 순으로 정렬)</div><div class="note">내 생존자: <b>${c.emo} ${c.name}</b> · Q ${c.skill.icon} ${c.skill.name} ${c.sk2?` · F ${c.sk2.icon} ${c.sk2.name}`:''}${c.ult?` · R ${c.ult.icon} ${c.ult.name}`:''}</div><div class="pvchips">${chips}</div><div class="cdetail" style="padding:8px 12px">${statPanel(c)}${loadoutHtml(selChar)}</div>
  <div class="pvbox"><div class="pvh">🤖 연습 대전</div><div class="note">${RD?'아군 봇 2명과 함께 보스 레이드':MB?'아군 봇 2명 + 적 봇 3명과 3vs3 · 적 넥서스를 먼저 부수면 승리':`봇 3명과 난투 · ${PVP_KO}킬 먼저 달성하면 승리`}</div><div class="row"><button class="btn" id="pvPractice">연습 시작</button></div></div>${room}
  ${PV.err?`<div class="note" style="color:#ff8aa0">${esc(PV.err)}</div>`:''}
@@ -2538,7 +2633,7 @@ function frame(now){requestAnimationFrame(frame);const raw=(now-last)/1000;const
  if(state==='title')drawPreviews(now/1000)}
 resize();buildSprites();buildBg();buildTitle();renderLB();requestAnimationFrame(frame);
 Net.init();
-if(location.protocol==='file:'||location.hostname==='localhost')window.__nf={pvShoot,aim,get drawWorld(){return drawWorld},useSkill2,useUlt,pvSkill2,pvUlt,pvRender,render,CHS:CHARS.map(c=>c.id),pvUpdate,pvBotMoba,pvBot,pvEnd,useGadget,PV,pvMe,pvDash,pvSkill,pvStartPractice,pvJoin,pvRequestStart,joy,tryDash,useSkill,Net,get G(){return G},get P(){return P},get state(){return state},startGame,choose,update,set sel(v){selChar=v},set diff(v){selDiff=v},showEnd,unlockAll(){PROG.kills=1e6;PROG.boss=99;PROG.time=9999}};
+if(location.protocol==='file:'||location.hostname==='localhost')window.__nf={drawHero,CH,pvShoot,aim,get drawWorld(){return drawWorld},useSkill2,useUlt,pvSkill2,pvUlt,pvRender,render,CHS:CHARS.map(c=>c.id),pvUpdate,pvBotMoba,pvBot,pvEnd,useGadget,PV,pvMe,pvDash,pvSkill,pvStartPractice,pvJoin,pvRequestStart,joy,tryDash,useSkill,Net,get G(){return G},get P(){return P},get state(){return state},startGame,choose,update,set sel(v){selChar=v},set diff(v){selDiff=v},showEnd,unlockAll(){PROG.kills=1e6;PROG.boss=99;PROG.time=9999}};
 </script>
 </body>
 </html>
