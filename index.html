@@ -87,6 +87,13 @@ button{font-family:inherit;color:inherit}
 #actions.pv #ultBtn{width:calc(var(--u)*1.0);height:calc(var(--u)*1.0);right:calc(var(--u)*.35);bottom:calc(var(--u)*1.65)}
 #actions.pv #sk2Btn{width:calc(var(--u)*.8);height:calc(var(--u)*.8);right:calc(var(--u)*2.6);bottom:calc(var(--u)*.6)}
 #actions.pv #gadBtn{width:calc(var(--u)*.76);height:calc(var(--u)*.76);right:calc(var(--u)*1.57);bottom:calc(var(--u)*2.17)}
+.cfilter{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:680px;margin-bottom:6px}
+.cfilter button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
+.cfilter button small{opacity:.55;font-weight:700;margin-left:2px}.cfilter button.sel{background:rgba(255,209,102,.18);border-color:#ffd166}
+.ctile .tg{position:absolute;top:3px;left:4px;font-size:11px;line-height:1;filter:drop-shadow(0 1px 1px #000)}.ctile .bg{position:absolute;top:3px;right:4px;font-size:11px;line-height:1}
+.statp{display:flex;gap:10px;align-items:center;margin:6px 0 8px;flex-wrap:wrap;justify-content:center}.statr{flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px}
+.tagbig{font-weight:900;font-size:15px}.tagd{font-size:12px;opacity:.7;margin-top:-3px}.tagn{font-size:10px;opacity:.45;line-height:1.4}
+.sbar{display:grid;grid-template-columns:52px 1fr 76px;gap:6px;align-items:center;font-size:12px;font-weight:800}.sbar i{height:8px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden;display:block}.sbar i b{display:block;height:100%;border-radius:5px}.sbar em{font-style:normal;font-size:11px;opacity:.8;text-align:right}
 .lo{margin-top:8px;display:flex;flex-direction:column;gap:6px}
 .loh{display:flex;gap:8px;align-items:center}
 .loh .k{font-weight:900;font-size:11px;padding:1px 7px;border-radius:6px}
@@ -215,7 +222,7 @@ button{font-family:inherit;color:inherit}
 .gmseg{display:flex;gap:8px;width:100%;max-width:520px}.gmseg button{flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;padding:10px 6px;border-radius:14px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;font-family:inherit}
 .gmseg button b{font-size:15px}.gmseg button small{font-size:11px;opacity:.7}.gmseg button.sel{border-color:#ffd166;background:rgba(255,209,102,.12);box-shadow:0 0 18px -6px #ffd166}
 .pvchips button{width:40px;height:40px;border-radius:12px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:22px;cursor:pointer}
-.pvchips button.sel{border-color:var(--c);box-shadow:0 0 16px -4px var(--c)}
+.pvchips button.sel{border-color:var(--c);box-shadow:0 0 16px -4px var(--c)}.pvchips button{position:relative}.pvchips .pvt{position:absolute;top:-4px;right:-4px;font-size:10px;font-style:normal}
 #nickIn{background:rgba(0,0,0,.35);border:1.5px solid rgba(255,255,255,.25);border-radius:12px;padding:8px 12px;font-size:15px;color:#fff;width:150px;font-weight:700;user-select:text;-webkit-user-select:text}
 #pvpBody input{background:rgba(0,0,0,.35);border:1.5px solid rgba(255,255,255,.25);border-radius:12px;padding:10px 12px;font-size:18px;color:#fff;width:150px;text-align:center;letter-spacing:.15em;font-weight:900;text-transform:uppercase;user-select:text;-webkit-user-select:text}
 #pvrTitle.win{background:linear-gradient(180deg,#fff,#ffe29a 50%,#ff9b3d);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -266,6 +273,7 @@ button{font-family:inherit;color:inherit}
   <p class="tag">해가 뜰 때까지 <b>10분</b>. 세 명의 군주를 쓰러뜨리고 새벽을 맞이하라.<br>스킬 2개와 궁극기로도 쉽지 않을 것이다.</p>
   <div class="seg" id="diffSeg"><button data-d="hard" class="sel">🔥 하드</button><button data-d="nm">💀 악몽 (점수 ×1.8)</button></div>
   <div class="sectitle">— 생존자 선택 —</div>
+  <div class="cfilter" id="cfilter"></div>
   <div class="cgrid" id="cgrid"></div>
   <div class="cdetail" id="cdetail"></div>
   <button id="startBtn" class="btn">생존 시작</button>
@@ -274,7 +282,7 @@ button{font-family:inherit;color:inherit}
   <div id="lobby"></div>
   <div class="howto"><kbd>WASD</kbd>·<kbd>방향키</kbd>/화면 드래그 이동 · <kbd>Space</kbd> 대시 · <kbd>Q</kbd> 스킬1 · <kbd>F</kbd> 스킬2 · <kbd>R</kbd> 궁극기 · <kbd>E</kbd> 가젯 · 공격은 자동</div>
   <div class="best" id="best"></div>
-  <div style="font-size:11px;opacity:.45;text-align:center">v2.5 · 신규 생존자 12명 추가 (총 49명)</div>
+  <div style="font-size:11px;opacity:.45;text-align:center">v2.6 · 대전형/생존형 분류 · 능력치 오각형</div>
 </div>
 
 <div id="levelup" class="screen dim hidden">
@@ -1545,20 +1553,65 @@ $('lbTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 
 /* ================= SCREENS ================= */
 const previews={};let detailCv=null;
+const BOTDATA={knight:[41,289,'all'],mage:[38,215,'pvp'],hunter:[5,257,'pve'],volt:[39,302,'all'],igna:[5,255,'pve'],rina:[16,267,'pve'],bruno:[9,581,'pve'],luna:[10,381,'pve'],jack:[12,388,'pve'],raven:[34,246,'pvp'],gear:[48,249,'pvp'],viper:[23,391,'pve'],rex:[10,342,'pve'],mina:[21,286,'pve'],zephyr:[19,179,'pvp'],soya:[7,230,'pro'],iron:[40,514,'all'],scope:[16,180,'pvp'],blaze:[26,281,'pvp'],harmony:[14,376,'pve'],kit:[22,196,'pvp'],titan:[22,488,'pve'],necro:[20,199,'pvp'],ciel:[15,196,'pro'],kenji:[39,259,'pvp'],goliath:[40,257,'pvp'],anchor:[51,268,'pvp'],lumi:[25,164,'pvp'],arachne:[28,283,'all'],orbiter:[16,220,'pvp'],mira:[38,176,'pvp'],bear:[48,645,'all'],karn:[39,598,'all'],amara:[50,310,'all'],yeou:[14,260,'pve'],charon:[46,254,'pvp'],torch:[34,458,'all'],ryuun:[44,199,'pvp'],brandt:[3,569,'pve'],luce:[8,252,'pve'],moros:[32,304,'all'],shade:[28,247,'pvp'],rei:[18,184,'pvp'],volk:[17,544,'pve'],veg:[35,198,'pvp'],karin:[13,189,'pro'],ido:[17,312,'pve'],ruby:[15,250,'pve'],sola:[19,272,'pve']};
+const BOT_GAMES={pvp:1176,pve:294};
+const BEGIN=['bear','iron','knight','volt','torch'];
+const TAGS={all:{i:'⭐',n:'만능',d:'대전과 생존 모두 강함'},pvp:{i:'⚔️',n:'대전형',d:'친구와 싸울 때 강함'},pve:{i:'🌙',n:'생존형',d:'생존 모드에서 오래 버팀'},pro:{i:'🎓',n:'숙련자용',d:'다루기 어렵지만 손에 익으면 강함'}};
+function fxAll(list,mul=1,out=[]){for(const [k,o] of (list||[])){if(k==='repeat'){fxAll(o.fx,mul*Math.max(1,Math.round(o.s/o.iv)),out)}else if(k==='delay'){fxAll(o.fx,mul,out)}else out.push([k,o,mul])}return out}
+function abilFx(a){return a?(a.combo?a.combo.flat():a.fx||[]):[]}
+function rawStats(c){const gs=GS[c.id];const st=fstat(gs.s[0],charT(c));const W=c.start==='random'?'bolt':c.start;const L=WDEF[W].L[2];
+ const wdps=(W==='aura'?L.dps*1.6:W==='orbit'?L.dmg*L.n*1.4:(L.dmg||L.dps*2)*(L.n||(L.m?L.m/2.5:1))/(L.cd||1))*(PVW[W]||1);
+ const sk=[[abilFx(c.skill),c.skill.cd],[abilFx(c.sk2),c.sk2.cd],[abilFx(c.ult),40],[gs.g[0].fx,gs.g[0].cd]];
+ let sdps=0,shield=0,heal=0,mob=0,cc=0,rng=0;
+ for(const [list,cd] of sk){for(const [k,o,mul] of fxAll(list)){const n=(o.n||1)*mul;const d=(o.dmg||0)*n+(o.dps||0)*(o.dur||o.s||0)*mul+(o.end||0);sdps+=d/cd;
+  if(k==='shield')shield+=o.s*mul/cd;if(k==='heal')heal+=o.p/cd;if(k==='healall'){heal+=o.p/cd;cc+=o.p*4}if(k==='giant')shield+=o.s*0.3/cd;if(k==='revive')heal+=0.4/cd;
+  if(k==='blink')mob+=o.d/cd;if(k==='chain')mob+=(o.range||480)*0.5/cd;if(k==='haste')mob+=o.s*(o.m-1)*120/cd;if(k==='stealth')mob+=o.s*15/cd;
+  if(o.fz)cc+=o.fz*(o.n||1)*mul/cd*10;if(k==='freeze')cc+=o.s*mul/cd*10;if(k==='hook')cc+=(o.fz||0.6)*14/cd+6/cd;if(o.kb>=300)cc+=2/cd;if(k==='pet')cc+=o.n*1.5/cd;
+  if(['snipe','bigbeam','rocket','zap','hook','rain','orb','mark'].includes(k))rng+=(o.range||500)/cd}}
+ const atk=wdps*c.might*(1+(st.might||0))*(1+(c.crit||0)+(st.crit||0))+sdps*0.45;
+ const hp=c.hp*(1+(st.hp||0))*(1+0.07*(c.armor+(st.armor||0)))+(c.regen+(st.regen||0))*25+shield*900+heal*1400+((fxP(charT(c),'lifesteal')||{}).p||0)*2500+(fxP(charT(c),'dodge')?30:0);
+ const agi=c.spd*(1+(st.spd||0))*100+mob*0.35+(1/c.dash)*12;
+ const range=pvWRange(W,L)+rng*2.2;
+ const ctl=cc+(fxP(charT(c),'chill')?2:0);
+ return[atk,hp,agi,range,ctl]}
+let STATS=null;
+function charStats(id){if(!STATS){const raw={};for(const c of CHARS)raw[c.id]=rawStats(c);STATS={};const n=CHARS.length;for(const c of CHARS)STATS[c.id]=[0,0,0,0,0];
+  for(let a=0;a<5;a++){const order=CHARS.map(c=>c.id).sort((x,y)=>raw[x][a]-raw[y][a]);order.forEach((id,i)=>STATS[id][a]=Math.round((2+i/(n-1)*8)*10)/10)}
+  const pv=CHARS.map(c=>c.id).sort((x,y)=>(BOTDATA[x]?BOTDATA[x][0]:0)-(BOTDATA[y]?BOTDATA[y][0]:0)),pe=CHARS.map(c=>c.id).sort((x,y)=>(BOTDATA[x]?BOTDATA[x][1]:0)-(BOTDATA[y]?BOTDATA[y][1]:0));
+  pv.forEach((id,i)=>STATS[id].pvp=Math.round(i/(n-1)*100));pe.forEach((id,i)=>STATS[id].pve=Math.round(i/(n-1)*100))}return STATS[id]}
+function radarSvg(c,size=170){const v=charStats(c.id),L=['공격력','체력','민첩성','사거리','제어력'],cx=size/2,cy=size/2+4,R=size*0.33;
+ const pt=(i,k)=>{const a=-Math.PI/2+i/5*TAU;return[cx+Math.cos(a)*R*k,cy+Math.sin(a)*R*k]};const poly=k=>[0,1,2,3,4].map(i=>pt(i,k).map(x=>x.toFixed(1)).join(',')).join(' ');
+ let g='';for(const k of[0.25,0.5,0.75,1])g+=`<polygon points="${poly(k)}" fill="none" stroke="rgba(255,255,255,${k===1?0.3:0.12})" stroke-width="1"/>`;
+ for(let i=0;i<5;i++){const[x,y]=pt(i,1);g+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,.12)"/>`}
+ const vp=[0,1,2,3,4].map(i=>pt(i,v[i]/10).map(x=>x.toFixed(1)).join(',')).join(' ');
+ g+=`<polygon points="${vp}" fill="${hexA(c.color,0.35)}" stroke="${c.color}" stroke-width="2.2" stroke-linejoin="round"/>`;
+ for(let i=0;i<5;i++){const[x,y]=pt(i,v[i]/10);g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#fff"/>`;const[lx,ly]=pt(i,1.28);g+=`<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="rgba(255,255,255,.85)">${L[i]}</text><text x="${lx.toFixed(1)}" y="${(ly+16).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="900" fill="${c.color}">${Math.round(v[i])}</text>`}
+ return`<svg viewBox="0 0 ${size} ${size+14}" width="${size}" height="${size+14}" style="overflow:visible">${g}</svg>`}
+function statPanel(c){const v=charStats(c.id),b=BOTDATA[c.id]||[0,0,'pro'],tg=TAGS[b[2]];
+ const bar=(lbl,pct,col,txt)=>`<div class="sbar"><span>${lbl}</span><i><b style="width:${Math.max(4,pct)}%;background:${col}"></b></i><em>${txt}</em></div>`;
+ return`<div class="statp"><div>${radarSvg(c)}</div><div class="statr"><div class="tagbig">${tg.i} ${tg.n}${BEGIN.includes(c.id)?' · 🔰 입문 추천':''}</div><div class="tagd">${tg.d}</div>
+ ${bar('⚔️ 대전',v.pvp,'#ff5a6e',`승률 ${b[0]}%`)}${bar('🌙 생존',v.pve,'#7d8cff',`평균 ${fmtTime(b[1])}`)}
+ <div class="tagn">봇 대전 ${BOT_GAMES.pvp.toLocaleString()}판 · 생존 ${BOT_GAMES.pve}판 결과 (4인 난투 기준 평균 승률 25%)</div></div></div>`}
+let charFilter='all';
+function renderFilter(){const f=$('cfilter');if(!f)return;const n=t=>CHARS.filter(c=>(BOTDATA[c.id]||[0,0,'pro'])[2]===t).length;
+ const opts=[['all','전체',CHARS.length],['begin','🔰 입문 추천',BEGIN.length],['allx','⭐ 만능',n('all')],['pvp','⚔️ 대전형',n('pvp')],['pve','🌙 생존형',n('pve')],['pro','🎓 숙련자용',n('pro')]];
+ f.innerHTML=opts.map(([k,nm,c])=>`<button data-f="${k}" class="${charFilter===k?'sel':''}">${nm} <small>${c}</small></button>`).join('')}
 function buildTitle(){
- const el=$('cgrid');el.innerHTML='';
- CHARS.forEach(c=>{const d=document.createElement('div');const ul=unlocked(c);d.className='ctile'+(c.id===selChar?' sel':'')+(ul?'':' locked');d.style.setProperty('--c',c.color);
+ const el=$('cgrid');el.innerHTML='';renderFilter();
+ CHARS.forEach(c=>{const b=BOTDATA[c.id]||[0,0,'pro'];if(charFilter==='begin'?!BEGIN.includes(c.id):charFilter==='allx'?b[2]!=='all':charFilter!=='all'&&b[2]!==charFilter)return;const d=document.createElement('div');const ul=unlocked(c);d.className='ctile'+(c.id===selChar?' sel':'')+(ul?'':' locked');d.dataset.id=c.id;d.style.setProperty('--c',c.color);
   const cv=document.createElement('canvas');cv.width=120;cv.height=120;previews[c.id]=cv;d.appendChild(cv);
-  d.insertAdjacentHTML('beforeend',`<div class="nm">${c.name}</div>${ul?'':'<div class="lk">🔒</div>'}`);
-  d.addEventListener('click',()=>{selChar=c.id;lsSet('nf_sel',selChar);initAudio();sfx.click();[...el.children].forEach((x,j)=>x.classList.toggle('sel',CHARS[j].id===selChar));renderDetail()});el.appendChild(d)});
+  d.insertAdjacentHTML('beforeend',`<div class="nm">${c.name}</div><div class="tg">${TAGS[b[2]].i}</div>${BEGIN.includes(c.id)?'<div class="bg">🔰</div>':''}${ul?'':'<div class="lk">🔒</div>'}`);
+  d.addEventListener('click',()=>{selChar=c.id;lsSet('nf_sel',selChar);initAudio();sfx.click();[...el.children].forEach(x=>x.classList.toggle('sel',x.dataset.id===selChar));renderDetail()});el.appendChild(d)});
  renderDetail();
  [...$('diffSeg').children].forEach(b=>b.classList.toggle('sel',b.dataset.d===selDiff));
  const b=PROG.best;$('best').textContent=b?`🏆 내 최고 기록 — ${fmtNum(b.score)}점 (${CH[b.char]?CH[b.char].emo:''} ${fmtTime(b.time)} 생존${b.win?' · 새벽 도달':''})`:'';
 }
+document.addEventListener('click',e=>{const fb=e.target.closest('#cfilter button');if(fb){charFilter=fb.dataset.f;sfx.click();buildTitle();return}});
 document.addEventListener('click',e=>{const b=e.target.closest('.lob');if(!b)return;setLoad(b.dataset.c,b.dataset.lo,+b.dataset.i);sfx.click();if(state==='title')renderDetail();else if(typeof renderPvp==='function')renderPvp()});
 function renderDetail(){const c=CH[selChar];const ul=unlocked(c);const sw=c.start==='random'?{icon:'🎲',name:'랜덤 무기'}:WDEF[c.start];
  const el=$('cdetail');el.style.setProperty('--c',c.color);
  el.innerHTML=`<div class="hd"><b>${c.emo} ${c.name}</b><em>${c.title}</em></div>
+ ${statPanel(c)}
  <div class="ln"><span class="k tr">특성</span><span>${c.trait}</span></div>
  <div class="ln"><span class="k sk">스킬1 · Q</span><span><b>${c.skill.icon} ${c.skill.name}</b> — ${c.skill.desc} <span style="opacity:.6">(쿨 ${c.skill.cd}초)</span></span></div>
  <div class="ln"><span class="k s2">스킬2 · F</span><span><b>${c.sk2.icon} ${c.sk2.name}</b> — ${c.sk2.desc} <span style="opacity:.6">(쿨 ${c.sk2.cd}초)</span></span></div>
@@ -2147,7 +2200,7 @@ function pvExit(){if(state==='pvp'&&PV.phase!=='over'&&PV.mode==='online'){pvPre
 /* ---- UI ---- */
 function openPvp(){state='pvplobby';$('hud').classList.add('hidden');showScreen('pvpScreen');PV.phase='idle';if(PV.room){PV.ready=false;pvPresence('lobby')}renderPvp();Net.presence({st:'menu'})}
 function renderPvp(){const el=$('pvpBody');if(!el)return;const c=CH[selChar];const MB=PV.sel==='moba';
- const chips=CHARS.map(x=>`<button data-c="${x.id}" class="${x.id===selChar?'sel':''}" style="--c:${x.color}" title="${x.name}">${x.emo}</button>`).join('');
+ const chips=CHARS.slice().sort((a,b)=>(BOTDATA[b.id]?BOTDATA[b.id][0]:0)-(BOTDATA[a.id]?BOTDATA[a.id][0]:0)).map(x=>`<button data-c="${x.id}" class="${x.id===selChar?'sel':''}" style="--c:${x.color}" title="${x.name} · 봇 대전 승률 ${(BOTDATA[x.id]||[0])[0]}%">${x.emo}${(BOTDATA[x.id]||[])[2]==='pvp'||(BOTDATA[x.id]||[])[2]==='all'?'<i class="pvt">'+TAGS[BOTDATA[x.id][2]].i+'</i>':''}</button>`).join('');
  let room='';
  if(!Net.room)room=`<div class="note">${Net.extFail?'📴 온라인 서버에 연결하지 못했어요. 인터넷을 확인하고 새로고침해 주세요.':window.claude?'🌐 온라인 대전은 이 게임을 편집 권한으로 공유받은 친구끼리 할 수 있어요.':'🌐 온라인 서버 연결 중…'}<br>지금은 봇 연습만 가능해요.</div>`;
  else if(!PV.room)room=`<div class="pvbox"><div class="pvh">🌐 친구와 온라인 대전</div><div class="row"><button class="btn gold" id="pvCreate">방 만들기</button></div><div class="row"><input id="pvCode" maxlength="6" placeholder="방 코드 입력" autocomplete="off"><button class="btn ghost" id="pvJoinBtn">입장</button></div>${PV.joining?'<div class="note">입장 중…</div>':''}</div>`;
@@ -2158,7 +2211,7 @@ function renderPvp(){const el=$('pvpBody');if(!el)return;const c=CH[selChar];con
   <div class="row"><button class="btn ghost" id="pvReady">${PV.ready?'준비 취소':'✅ 준비 완료'}</button><button class="btn gold" id="pvStart" ${ros.length<2?'disabled':''}>${MB?'🏰 3vs3 시작':'⚔ 난투 시작'}</button></div>
   <div class="row"><button class="btn ghost" id="pvLeaveBtn">방 나가기</button></div></div>`}
  el.innerHTML=`<div class="gmseg"><button data-gm="moba" class="${MB?'sel':''}"><b>🏰 본진 공략전</b><small>3 vs 3 · 넥서스 파괴</small></button><button data-gm="ffa" class="${MB?'':'sel'}"><b>⚔️ 난투</b><small>개인전 · ${PVP_KO}킬 먼저</small></button></div>
- <div class="note">내 생존자: <b>${c.emo} ${c.name}</b> · Q ${c.skill.icon} ${c.skill.name} · F ${c.sk2.icon} ${c.sk2.name} · R ${c.ult.icon} ${c.ult.name}</div><div class="pvchips">${chips}</div><div class="cdetail" style="padding:8px 12px">${loadoutHtml(selChar)}</div>
+ <div class="note">⚔️·⭐ 표시 = 대전에서 강한 생존자 (봇 대전 승률 높은 순으로 정렬)</div><div class="note">내 생존자: <b>${c.emo} ${c.name}</b> · Q ${c.skill.icon} ${c.skill.name} · F ${c.sk2.icon} ${c.sk2.name} · R ${c.ult.icon} ${c.ult.name}</div><div class="pvchips">${chips}</div><div class="cdetail" style="padding:8px 12px">${statPanel(c)}${loadoutHtml(selChar)}</div>
  <div class="pvbox"><div class="pvh">🤖 연습 대전</div><div class="note">${MB?'아군 봇 2명 + 적 봇 3명과 3vs3 · 적 넥서스를 먼저 부수면 승리':`봇 3명과 난투 · ${PVP_KO}킬 먼저 달성하면 승리`}</div><div class="row"><button class="btn" id="pvPractice">연습 시작</button></div></div>${room}
  ${PV.err?`<div class="note" style="color:#ff8aa0">${esc(PV.err)}</div>`:''}
  <div class="note" style="opacity:.55">${MB?`규칙: 위·아래 두 갈래 길 · 포탑 2개 → 수호탑 → 넥서스 순서로 부숴야 해요 · 25초마다 미니언 출격 · 가운데 🐉 용을 잡으면 90초간 팀 공격력 +20% · 우리 기지 분수에서 체력 회복 · 제한 ${fmtTime(MOBA_TIME)}`:`규칙: ${PVP_KO}킬 먼저 또는 ${fmtTime(PVP_TIME)} 후 최다 킬 승리 · 30초마다 무기 자동 강화 · 스킬과 궁극기로 승부!`}</div>`}
