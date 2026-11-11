@@ -55,15 +55,24 @@ button{font-family:inherit;color:inherit}
 #toasts{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 176px);z-index:7;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;width:min(92vw,420px)}
 .toast{background:rgba(10,10,30,.85);border:1px solid rgba(255,209,102,.5);border-radius:12px;padding:7px 14px;font-size:13px;font-weight:700;box-shadow:0 0 18px rgba(255,200,80,.25);animation:toast 4.2s ease forwards;text-align:center}
 @keyframes toast{0%{opacity:0;transform:translateY(-10px)}8%{opacity:1;transform:none}85%{opacity:1}100%{opacity:0}}
-.abtn{position:fixed;z-index:6;border:none;border-radius:50%;pointer-events:auto;display:grid;place-items:center;touch-action:none;cursor:pointer;background:conic-gradient(var(--c) calc(var(--p,1)*1turn),rgba(255,255,255,.08) 0)}
-.abtn span{border-radius:50%;background:radial-gradient(circle at 35% 30%,#2a2f5c,#0c0d22);display:grid;place-items:center;font-weight:900;letter-spacing:.06em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);position:relative}
-.abtn.ready span{box-shadow:inset 0 0 0 2px var(--c),0 0 22px var(--c)}
-.abtn kbd{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-family:inherit;opacity:.65;white-space:nowrap}
-#dashBtn{--c:rgba(94,242,255,.9);right:calc(22px + env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));width:84px;height:84px}
-#dashBtn span{width:72px;height:72px;font-size:13px;color:#bff8ff}
-#gadBtn{--c:rgba(255,79,216,.95);right:calc(122px + env(safe-area-inset-right));bottom:calc(36px + env(safe-area-inset-bottom));width:62px;height:62px}
-#gadBtn span{width:52px;height:52px;font-size:24px}
-#gadBtn .cdn{position:absolute;inset:0;display:grid;place-items:center;font-size:16px;font-weight:900;color:#fff;text-shadow:0 0 6px #000;background:rgba(0,0,0,.45);border-radius:50%}
+#actions{--u:clamp(52px,9.5vmin,76px);position:fixed;right:calc(12px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));width:calc(var(--u)*2.75);height:calc(var(--u)*2.75);pointer-events:none;z-index:6}
+.abtn{position:absolute;border:none;border-radius:50%;pointer-events:auto;display:grid;place-items:center;touch-action:none;cursor:pointer;padding:0;
+ background:conic-gradient(var(--c) calc(var(--p,1)*1turn),rgba(255,255,255,.07) 0);box-shadow:0 4px 14px rgba(0,0,0,.45);transition:transform .08s}
+.abtn:active{transform:scale(.93)}
+.abtn span{width:86%;height:86%;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(42,47,92,.92),rgba(12,13,34,.92));display:grid;place-items:center;font-weight:900;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.abtn.ready span{box-shadow:inset 0 0 0 2px var(--c),0 0 18px var(--c)}
+.abtn kbd{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:6px;background:#141432;border:1px solid rgba(255,255,255,.3);font-family:inherit;font-size:9px;font-weight:900;line-height:16px;color:#fff;opacity:.85}
+.abtn .cdn{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;color:#fff;text-shadow:0 0 6px #000;background:rgba(0,0,0,.5);border-radius:50%}
+#dashBtn{--c:rgba(94,242,255,.95);width:calc(var(--u)*1.25);height:calc(var(--u)*1.25);right:calc(var(--u)*.17);bottom:calc(var(--u)*.17)}
+#dashBtn span{font-size:calc(var(--u)*.2);letter-spacing:.06em;color:#bff8ff}
+#skillBtn{--c:rgba(255,209,102,.95);width:calc(var(--u)*.98);height:calc(var(--u)*.98);right:calc(var(--u)*.68);bottom:calc(var(--u)*1.67)}
+#skillBtn span{font-size:calc(var(--u)*.42)}
+#skillBtn .cdn{font-size:calc(var(--u)*.3)}
+#skillBtn.ready{animation:sk 1.2s ease-in-out infinite}
+@keyframes sk{50%{transform:scale(1.06)}}
+#gadBtn{--c:rgba(255,79,216,.95);width:calc(var(--u)*.86);height:calc(var(--u)*.86);right:calc(var(--u)*1.72);bottom:calc(var(--u)*.73)}
+#gadBtn span{font-size:calc(var(--u)*.38)}
+#gadBtn .cdn{font-size:calc(var(--u)*.26)}
 .lo{margin-top:8px;display:flex;flex-direction:column;gap:6px}
 .loh{display:flex;gap:8px;align-items:center}
 .loh .k{font-weight:900;font-size:11px;padding:1px 7px;border-radius:6px}
@@ -72,11 +81,6 @@ button{font-family:inherit;color:inherit}
 .lob{border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);border-radius:12px;padding:7px 8px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
 .lob b{font-size:12.5px}.lob span{font-size:10.5px;opacity:.72;line-height:1.35}
 .lob.sel{border-color:#ffd166;background:rgba(255,209,102,.12);box-shadow:0 0 14px -6px #ffd166}
-#skillBtn{--c:rgba(255,209,102,.95);right:calc(30px + env(safe-area-inset-right));bottom:calc(136px + env(safe-area-inset-bottom));width:70px;height:70px}
-#skillBtn span{width:60px;height:60px;font-size:28px}
-#skillBtn.ready{animation:sk 1.2s ease-in-out infinite}
-@keyframes sk{50%{transform:scale(1.07)}}
-#skillBtn .cdn{position:absolute;inset:0;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff;text-shadow:0 0 6px #000;background:rgba(0,0,0,.45);border-radius:50%}
 
 /* Screens */
 .screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:12px;
@@ -208,8 +212,8 @@ button{font-family:inherit;color:inherit}
  .slot{width:32px;height:32px;font-size:17px}
 }
 @media (max-width:600px){
- #slots{position:fixed;top:auto;left:calc(env(safe-area-inset-left) + 10px);bottom:calc(env(safe-area-inset-bottom) + 14px);flex-direction:column-reverse}
- .slot{width:27px;height:27px;font-size:14px}
+ .slot{width:24px;height:24px;font-size:13px;border-radius:7px}
+ .srow{gap:2px}
  .cgrid{gap:5px}.ctile .nm{font-size:11px}
  .stat .v{font-size:17px}
 }
@@ -231,9 +235,12 @@ button{font-family:inherit;color:inherit}
 </div>
 <div id="banner"></div>
 <div id="toasts"></div>
-<button id="skillBtn" class="abtn hidden" aria-label="고유 스킬"><span id="skillIcon">✨</span><kbd>Q</kbd></button>
+
+<div id="actions">
 <button id="gadBtn" class="abtn hidden" aria-label="가젯"><span id="gadIcon">🔧</span><kbd>E</kbd></button>
 <button id="dashBtn" class="abtn hidden" aria-label="대시"><span>DASH</span><kbd>SPACE</kbd></button>
+<button id="skillBtn" class="abtn hidden" aria-label="고유 스킬"><span id="skillIcon">✨</span><kbd>Q</kbd></button>
+</div>
 
 <div id="title" class="screen">
   <div class="logo"><div class="logo-main bh">NIGHTFALL</div><div class="logo-sub bh">밤의 생존자</div></div>
@@ -248,7 +255,7 @@ button{font-family:inherit;color:inherit}
   <div id="lobby"></div>
   <div class="howto"><kbd>WASD</kbd>·<kbd>방향키</kbd>/화면 드래그 이동 · <kbd>Space</kbd> 대시 · <kbd>Q</kbd> 고유 스킬 · <kbd>E</kbd> 가젯 · 공격은 자동</div>
   <div class="best" id="best"></div>
-  <div style="font-size:11px;opacity:.45;text-align:center">v1.1 · 11월 11일 업데이트 · 온라인 서버판</div>
+  <div style="font-size:11px;opacity:.45;text-align:center">v1.2 · 버튼 배치 정리 · 온라인 서버판</div>
 </div>
 
 <div id="levelup" class="screen dim hidden">
@@ -986,9 +993,11 @@ function render(dt){
   if(G.blueFlash>0){ctx.fillStyle=`rgba(150,220,255,${G.blueFlash*0.45})`;ctx.fillRect(0,0,W,H)}
   if(G.won){const k=Math.min(1,(3.2-(G.endT||0))/3);const gr=ctx.createLinearGradient(0,H,0,0);gr.addColorStop(0,`rgba(255,180,90,${0.45*k})`);gr.addColorStop(1,`rgba(255,240,200,${0.2*k})`);ctx.fillStyle=gr;ctx.fillRect(0,0,W,H)}
   drawIndicators(cam);
+  if(joy.id===null&&state==='play'&&isTouch&&!G.dead)drawJoyHint();
   if(joy.id!==null&&state==='play'){ctx.lineWidth=2;ctx.strokeStyle='rgba(255,255,255,.25)';ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.arc(joy.ox,joy.oy,58,0,TAU);ctx.fill();ctx.stroke();
    let jx=joy.x-joy.ox,jy=joy.y-joy.oy;const l=Math.hypot(jx,jy);if(l>55){jx=jx/l*55;jy=jy/l*55}ctx.fillStyle='rgba(158,246,255,.45)';ctx.beginPath();ctx.arc(joy.ox+jx,joy.oy+jy,24,0,TAU);ctx.fill()}
  }}
+function drawJoyHint(){const x=Math.max(84,W*0.12),y=H-Math.max(96,H*0.14);ctx.lineWidth=2;ctx.strokeStyle='rgba(255,255,255,.13)';ctx.fillStyle='rgba(255,255,255,.03)';ctx.beginPath();ctx.arc(x,y,54,0,TAU);ctx.fill();ctx.stroke();ctx.fillStyle='rgba(158,246,255,.16)';ctx.beginPath();ctx.arc(x,y,22,0,TAU);ctx.fill();ctx.font='700 11px "Noto Sans KR",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,255,255,.28)';ctx.fillText('어디든 드래그해서 이동',x,y+72)}
 function drawIndicators(cam){const targets=[];if(G.boss)targets.push([G.boss.x,G.boss.y,'#ff4f6a']);for(const p of G.pickups)if(p.k==='chest')targets.push([p.x,p.y,'#ffd166']);
  const top=90,m=26;for(const [tx,ty,c] of targets){const sx=(tx-cam.x)*Z+W/2,sy=(ty-cam.y)*Z+H/2;if(sx>m&&sx<W-m&&sy>top&&sy<H-m)continue;
   const cx=W/2,cy=H/2,dx=sx-cx,dy=sy-cy;const kx=dx!==0?((dx>0?W-m:m)-cx)/dx:1e9,ky=dy!==0?((dy>0?H-m:top)-cy)/dy:1e9;const k=Math.min(kx,ky);const ix=cx+dx*k,iy=cy+dy*k,a=Math.atan2(dy,dx);
@@ -1652,6 +1661,7 @@ function pvRender(dt){const cam=PV.cam;let sx=0,sy=0;if(PV.shake>0){sx=rand(-1,1
  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.drawImage(vignette,0,0,W,H);
  if(PV.hurtFlash>0){ctx.globalAlpha=Math.min(1,PV.hurtFlash);ctx.drawImage(redVig,0,0,W,H);ctx.globalAlpha=1}
  for(const f of PV.fs){if(f.id===PV.myId||!f.alive||f.gone)continue;const sx2=(f.x-cam.x)*Z+W/2,sy2=(f.y-cam.y)*Z+H/2;if(sx2>20&&sx2<W-20&&sy2>80&&sy2<H-20)continue;const a=Math.atan2(sy2-H/2,sx2-W/2);const ix=clamp(sx2,24,W-24),iy=clamp(sy2,90,H-24);ctx.save();ctx.translate(ix,iy);ctx.rotate(a);ctx.fillStyle='#ff5a6e';ctx.beginPath();ctx.moveTo(13,0);ctx.lineTo(-7,-9);ctx.lineTo(-3,0);ctx.lineTo(-7,9);ctx.closePath();ctx.fill();ctx.restore()}
+ if(joy.id===null&&state==='pvp'&&isTouch)drawJoyHint();
  if(joy.id!==null&&state==='pvp'){ctx.lineWidth=2;ctx.strokeStyle='rgba(255,255,255,.25)';ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.arc(joy.ox,joy.oy,58,0,TAU);ctx.fill();ctx.stroke();let jx=joy.x-joy.ox,jy=joy.y-joy.oy;const l=Math.hypot(jx,jy);if(l>55){jx=jx/l*55;jy=jy/l*55}ctx.fillStyle='rgba(158,246,255,.45)';ctx.beginPath();ctx.arc(joy.ox+jx,joy.oy+jy,24,0,TAU);ctx.fill()}}
 
 /* ================= LOOP ================= */
