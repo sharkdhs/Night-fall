@@ -361,6 +361,10 @@ textarea.accin{font-size:11px;resize:none}
 .rsi{display:flex;align-items:center;gap:8px;text-align:left;background:var(--bg1);border:1px solid var(--line);border-radius:4px;padding:6px 8px;color:var(--txt);font-family:inherit}
 .rsi:not([disabled]){border-color:#7b4fbf}.rsi[disabled]{opacity:.55}.rsi.max{opacity:.8;border-color:var(--gold)}
 .rsi .ri{font-size:22px}.rsi .rt{flex:1;font-size:12px;line-height:1.3}.rsi .rt small{color:var(--sub);font-size:10.5px}.rsi .rc{font-weight:900;font-size:12px;color:#c39bff;white-space:nowrap}
+
+#skTip{position:fixed;z-index:40;display:none;background:rgba(7,11,18,.96);border:1px solid var(--gold);border-radius:4px;padding:9px 11px;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.6);font-size:12px;line-height:1.45}
+#skTip .th{display:flex;align-items:center;gap:6px;font-size:14px;margin-bottom:4px}#skTip .tk{background:var(--gold);color:#0b0f15;font-weight:900;font-size:11px;border-radius:2px;padding:0 5px}#skTip .ti{font-size:18px}
+#skTip .td{color:var(--txt)}#skTip .tq2{color:#9fe6f2;margin-top:4px}#skTip .tm{color:var(--gold2);margin-top:5px;font-size:11px;font-weight:800}#skTip .tf{color:var(--sub);font-size:10px;margin-top:3px}
 </style>
 </head>
 <body>
@@ -403,7 +407,7 @@ textarea.accin{font-size:11px;resize:none}
   <div id="lobby"></div>
   <div class="howto"><kbd>WASD</kbd>·<kbd>방향키</kbd>/화면 드래그 이동 · <kbd>J</kbd>/클릭 공격 · <kbd>Space</kbd> 대시 · <kbd>Q</kbd> 스킬1 · <kbd>F</kbd> 스킬2 · <kbd>R</kbd> 궁극기 · <kbd>E</kbd> 가젯 · 공격은 자동</div>
   <div class="best" id="best"></div>
-  <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:11px"><span style="opacity:.45">v4.6</span><input id="adminIn" type="password" placeholder="관리자 코드를 입력하세요" autocomplete="off" style="width:150px;padding:4px 8px;border-radius:3px;border:1px solid #2a3442;background:#0d141e;color:#fff;font-size:11px"><button id="adminBtn" class="btn ghost" style="padding:4px 10px;font-size:11px;min-height:0">확인</button></div>
+  <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:11px"><span style="opacity:.45">v4.7</span><input id="adminIn" type="password" placeholder="관리자 코드를 입력하세요" autocomplete="off" style="width:150px;padding:4px 8px;border-radius:3px;border:1px solid #2a3442;background:#0d141e;color:#fff;font-size:11px"><button id="adminBtn" class="btn ghost" style="padding:4px 10px;font-size:11px;min-height:0">확인</button></div>
 </div>
 
 <div id="levelup" class="screen dim hidden">
@@ -2166,9 +2170,10 @@ $('dashBtn').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropaga
 function pvCastMouse(slot){const me=pvMe();if(!me)return;if(isTouch){pvCast(slot,null,null);return}const wx=(mouse.x-W/2)/Z+PV.cam.x,wy=(mouse.y-H/2)/Z+PV.cam.y;const sh=skillShape(me.ch,slot,me);const R=sh.rg||sh.L||400;pvCast(slot,Math.atan2(wy-me.y,wx-me.x),Math.min(1,Math.hypot(wx-me.x,wy-me.y)/R))}
 function pvCast(slot,ang,mag){const me=pvMe();if(!me)return;me.castA=ang;me.castM=mag;try{slot==='q'?pvSkill(me):slot==='f'?pvSkill2(me):slot==='e'?pvGadget(me):pvUlt(me)}finally{me.castA=null;me.castM=null}}
 for(const [id,slot,fn] of [['skillBtn','q',()=>useSkill()],['sk2Btn','f',()=>useSkill2()],['ultBtn','r',()=>useUlt()],['gadBtn','e',()=>useGadget()]]){const el=$(id);
- el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(state!=='pvp'&&state!=='play'){fn();return}if(aim.id!==null){if(state==='pvp')pvCast(slot,null,null);else sCast(slot,null,null);return}const r=el.getBoundingClientRect();aim.slot=slot;aim.el=el;aim.t0=performance.now();aim.auto=false;aim.id=e.pointerId;aim.ox=e.clientX;aim.oy=e.clientY;aim.x=e.clientX;aim.y=e.clientY;aim.R=Math.max(55,r.width*1.1);el.classList.add('aim');try{el.setPointerCapture(e.pointerId)}catch(_){}});
- el.addEventListener('pointermove',e=>{if(e.pointerId!==aim.id)return;aim.x=e.clientX;aim.y=e.clientY});
- const end=(e,fire)=>{if(e.pointerId!==aim.id)return;aim.id=null;el.classList.remove('aim');const sl=aim.slot;aim.slot=null;if(!fire)return;const v=aimVec();const tap=v.l<aim.R*0.28;if(state==='pvp')pvCast(sl,tap?null:v.a,tap?null:v.m);else if(state==='play')sCast(sl,tap?null:v.a,tap?null:v.m)};
+ el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(state!=='pvp'&&state!=='play'){fn();return}if(aim.id!==null){if(state==='pvp')pvCast(slot,null,null);else sCast(slot,null,null);return}const r=el.getBoundingClientRect();aim.slot=slot;aim.el=el;aim.t0=performance.now();aim.auto=false;aim.id=e.pointerId;aim.ox=e.clientX;aim.oy=e.clientY;aim.x=e.clientX;aim.y=e.clientY;aim.R=Math.max(55,r.width*1.1);el.classList.add('aim');try{el.setPointerCapture(e.pointerId)}catch(_){}
+  clearTimeout(aim.tip);aim.tipShown=false;const pid=e.pointerId;aim.tip=setTimeout(()=>{if(aim.id===pid&&aimVec().l<aim.R*0.28){showSkTip(slot,el);aim.tipShown=true}},420)});
+ el.addEventListener('pointermove',e=>{if(e.pointerId!==aim.id)return;aim.x=e.clientX;aim.y=e.clientY;if(aim.tipShown&&aimVec().l>=aim.R*0.28){aim.tipShown=false;hideSkTip()}});
+ const end=(e,fire)=>{if(e.pointerId!==aim.id)return;clearTimeout(aim.tip);const wasTip=aim.tipShown;aim.tipShown=false;hideSkTip();aim.id=null;el.classList.remove('aim');const sl=aim.slot;aim.slot=null;if(!fire)return;if(wasTip&&aimVec().l<aim.R*0.28)return;const v=aimVec();const tap=v.l<aim.R*0.28;if(state==='pvp')pvCast(sl,tap?null:v.a,tap?null:v.m);else if(state==='play')sCast(sl,tap?null:v.a,tap?null:v.m)};
  el.addEventListener('pointerup',e=>end(e,true));el.addEventListener('pointercancel',e=>end(e,false))}
 addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='INPUT')return;keys[e.code]=true;
  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();
@@ -2195,7 +2200,19 @@ cvs.addEventListener('pointerdown',e=>{initAudio();if(state==='pvp'&&e.pointerTy
 cvs.addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;if(e.pointerId!==joy.id)return;joy.x=e.clientX;joy.y=e.clientY;const dx=joy.x-joy.ox,dy=joy.y-joy.oy,l=Math.hypot(dx,dy);if(l>80){joy.ox=joy.x-dx/l*80;joy.oy=joy.y-dy/l*80}});
 const endJoy=e=>{if(e.pointerId===joy.id)joy.id=null};
 cvs.addEventListener('pointerup',endJoy);cvs.addEventListener('pointercancel',endJoy);
-function inputReset(){if(aim.el)aim.el.classList.remove('aim');for(const id of['atkBtn','skillBtn','sk2Btn','ultBtn','gadBtn'])$(id).classList.remove('aim');aim.id=null;aim.slot=null;aim.auto=false;joy.id=null}
+
+function skTipInfo(slot){const me=state==='pvp'?pvMe():P;if(!me)return null;const c=state==='pvp'?me.ch:P.char;
+ const cdT=v=>v>0?` · 남은 쿨타임 ${Math.ceil(v)}초`:' · 사용 가능';
+ if(slot==='q'){const a=c.skill;let extra='';if(c.q2)extra=`<div class="tq2">↳ 다시 누르기: <b>${c.q2.i} ${c.q2.n}</b> — ${c.q2.k==='dash'?'표식이 남은 적에게 돌진해 일격':'표식이 터지며 추가 피해'}</div>`;return{k:'Q',icon:a.icon,name:a.name,desc:a.desc.split(' · 맞히면')[0],meta:`쿨타임 ${a.cd}초`+cdT(me.skillCd),extra}}
+ if(slot==='f'&&c.sk2){const a=c.sk2;return{k:'F',icon:a.icon,name:a.name,desc:a.desc,meta:`쿨타임 ${a.cd}초`+cdT(me.sk2Cd),extra:''}}
+ if(slot==='r'&&c.ult){const a=c.ult;return{k:'R',icon:a.icon,name:a.name,desc:a.desc,meta:`궁극기 · 충전 ${Math.floor(Math.min(1,me.uc||0)*100)}%`,extra:''}}
+ if(slot==='e'&&me.gad){const g=me.gad;return{k:'E',icon:g.i,name:g.n,desc:g.d,meta:`가젯 · 쿨타임 ${g.cd}초`+cdT(me.gadCd),extra:''}}
+ return null}
+function showSkTip(slot,el){const I=skTipInfo(slot);if(!I)return;let t=$('skTip');if(!t){t=document.createElement('div');t.id='skTip';document.body.appendChild(t)}
+ t.innerHTML=`<div class="th"><span class="tk">${I.k}</span><span class="ti">${I.icon}</span><b>${esc(I.name)}</b></div><div class="td">${esc(I.desc)}</div>${I.extra}<div class="tm">${I.meta}</div><div class="tf">손을 떼면 취소 · 끌면 조준</div>`;
+ const r=el.getBoundingClientRect();t.style.display='block';const w=Math.min(260,innerWidth-20);t.style.width=w+'px';const x=clamp(r.left+r.width/2-w-14,10,innerWidth-w-10);t.style.left=x+'px';t.style.top='0px';const h=t.offsetHeight;t.style.top=clamp(r.top+r.height/2-h/2,10,innerHeight-h-10)+'px';if(navigator.vibrate)try{navigator.vibrate(12)}catch(_){}}
+function hideSkTip(){const t=document.getElementById('skTip');if(t)t.style.display='none'}
+function inputReset(){clearTimeout(aim.tip);aim.tipShown=false;hideSkTip();if(aim.el)aim.el.classList.remove('aim');for(const id of['atkBtn','skillBtn','sk2Btn','ultBtn','gadBtn'])$(id).classList.remove('aim');aim.id=null;aim.slot=null;aim.auto=false;joy.id=null}
 function aimEndAny(e,fire){if(e.pointerId!==aim.id)return;if(aim.slot==='atk')endAim(e,fire);else{const el=aim.el;if(el)el.dispatchEvent(new PointerEvent(fire?'pointerup':'pointercancel',{pointerId:e.pointerId,clientX:e.clientX,clientY:e.clientY}))}if(e.pointerId===aim.id)inputReset()}
 addEventListener('pointermove',e=>{if(e.pointerId===aim.id){aim.x=e.clientX;aim.y=e.clientY}});
 addEventListener('pointerup',e=>{aimEndAny(e,true);if(e.pointerId===joy.id)joy.id=null});
@@ -2933,7 +2950,7 @@ async function checkUpdate(){if(location.protocol!=='https:'&&location.protocol!
 setTimeout(checkUpdate,4000);setInterval(()=>{if(state==='title'||state==='pvpresult'||state==='over')checkUpdate()},180000);
 $('accBody').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'&&e.target.tagName==='INPUT'){const g=$('accGo');if(g)g.click()}});
 
-const BUILD='4.6';
+const BUILD='4.7';
 
 function raidShopHtml(){const d=raidData();return`<div class="pvbox"><div class="pvh">레이드 유물 · 생존 모드 영구 강화</div><div class="note">💠 심연의 정수 <b style="color:#c39bff">${d.e}</b>개 · 레이드를 클리어하면 3개 (150초 이내 +2, 친구와 +1), 실패해도 보스를 절반까지 몰면 1개</div>
  <div class="rshop">${Object.entries(RAID_UP).map(([k,u])=>{const lv=d.u[k]|0,mx=lv>=u.max,cost=raidCost(k,lv);return`<button class="rsi ${mx?'max':''}" data-ru="${k}" ${mx||d.e<cost?'disabled':''}><span class="ri">${u.i}</span><span class="rt"><b>${u.n}</b> <small>Lv ${lv}/${u.max}</small><br><small>${u.d}</small></span><span class="rc">${mx?'MAX':'💠 '+cost}</span></button>`}).join('')}</div></div>`}
