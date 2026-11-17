@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b1424">
+<title>더 피치 ⚾ 리얼 변화구 야구</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#0b1424;color:#fff;font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif}
+#cv{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;display:block;touch-action:none}
+button{font-family:inherit;cursor:pointer;border:0;color:#fff}
+.hide{display:none!important}
+/* 스코어보드 */
+#sb{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:8px;white-space:nowrap;display:flex;align-items:stretch;gap:0;background:rgba(8,14,28,.88);border:1px solid rgba(255,255,255,.14);border-radius:10px;overflow:hidden;font-weight:800;font-size:14px;z-index:5;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+#sb .tm{display:flex;align-items:center;gap:4px;padding:4px 6px;font-size:13px}
+#sb .tm b{font-size:17px;min-width:14px;text-align:center}
+#sb .tm i{width:6px;height:22px;border-radius:2px;display:inline-block}
+#sb .inn{padding:4px 6px;background:rgba(255,255,255,.08);display:flex;align-items:center;font-size:15px}
+#sb .cnt{padding:3px 8px;display:flex;flex-direction:column;justify-content:center;font-size:10px;line-height:13px;gap:1px}
+#sb .cnt span{display:flex;align-items:center;gap:3px}
+#sb .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.18);display:inline-block}
+#sb .b.on{background:#3fe07a}#sb .s.on{background:#ffd23f}#sb .o.on{background:#ff4b4b}
+#sb .bases{position:relative;width:40px;margin:0 5px 0 3px}
+#sb .bases i{position:absolute;width:11px;height:11px;transform:rotate(45deg);border:1.5px solid rgba(255,255,255,.5);background:transparent}
+#sb .bases i.on{background:#ffd23f;border-color:#ffd23f}
+#info{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top) + 50px);display:flex;justify-content:space-between;gap:8px;z-index:4;pointer-events:none;font-size:12px}
+#info>div{background:rgba(8,14,28,.72);border-radius:8px;padding:5px 8px;max-width:49%;line-height:1.35}
+#info .nm{font-weight:800;font-size:13px}
+#info .st{opacity:.8}
+.bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:3px;overflow:hidden}.bar i{display:block;height:100%;background:#3fe07a}
+#pinfo{position:fixed;left:8px;top:calc(env(safe-area-inset-top) + 124px);z-index:4;background:rgba(8,14,28,.78);border-radius:8px;padding:6px 9px;font-size:12px;line-height:1.45;pointer-events:none;border-left:4px solid #fff;max-width:54vw}
+#pinfo b{font-size:14px}
+#ban{position:fixed;left:0;right:0;top:27%;text-align:center;z-index:6;pointer-events:none;transition:opacity .2s}
+#ban .big{font-size:42px;font-weight:900;letter-spacing:-1px;text-shadow:0 4px 0 rgba(0,0,0,.35),0 0 24px rgba(0,0,0,.5);animation:pop .35s ease-out}
+#ban .sub{font-size:15px;font-weight:700;margin-top:6px;text-shadow:0 2px 6px #000;opacity:.95}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+/* 컨트롤 */
+#ctl{position:fixed;left:0;right:0;bottom:0;padding:8px 8px calc(env(safe-area-inset-bottom) + 10px);z-index:5;pointer-events:none}
+#ctl>*{pointer-events:auto}
+#hint{text-align:center;font-size:12px;opacity:.85;margin-bottom:6px;pointer-events:none;text-shadow:0 1px 3px #000}
+.row{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;align-items:center}
+.row::-webkit-scrollbar{display:none}
+.pbtn{flex:0 0 auto;min-width:64px;padding:7px 9px;border-radius:10px;background:rgba(20,30,55,.92);border:2px solid rgba(255,255,255,.12);font-weight:800;font-size:13px;text-align:center;line-height:1.15}
+.pbtn small{display:block;font-size:10px;opacity:.75;font-weight:700}
+.pbtn.sel{border-color:#fff;background:rgba(60,80,130,.95);transform:translateY(-2px)}
+.chip{flex:0 0 auto;padding:6px 10px;border-radius:16px;background:rgba(20,30,55,.9);border:1.5px solid rgba(255,255,255,.15);font-size:12px;font-weight:700}
+.chip.sel{background:#ffd23f;color:#111;border-color:#ffd23f}
+#bottom{display:flex;align-items:flex-end;gap:8px;margin-top:8px}
+#bottom .grow{flex:1;min-width:0}
+#act{width:82px;height:82px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff7a59,#d6283b);font-size:19px;font-weight:900;box-shadow:0 6px 0 #8c1424,0 8px 20px rgba(0,0,0,.5);flex:0 0 auto}
+#act:active{transform:translateY(3px);box-shadow:0 3px 0 #8c1424}
+#act.bat{background:radial-gradient(circle at 35% 30%,#5fb8ff,#1f5fd1);box-shadow:0 6px 0 #133c86,0 8px 20px rgba(0,0,0,.5)}
+.sbtn{padding:8px 11px;border-radius:9px;background:rgba(20,30,55,.92);border:1px solid rgba(255,255,255,.16);font-size:12px;font-weight:700}
+#topbtns{position:fixed;right:8px;top:calc(env(safe-area-inset-top) + 8px);z-index:7;display:flex;gap:6px}
+#topbtns button{width:34px;height:34px;border-radius:9px;background:rgba(8,14,28,.85);border:1px solid rgba(255,255,255,.18);font-size:15px}
+#chartWrap{position:fixed;right:8px;top:calc(env(safe-area-inset-top) + 124px);z-index:4;background:rgba(8,14,28,.82);border-radius:10px;padding:4px;pointer-events:none}
+#chartWrap .t{font-size:10px;opacity:.8;text-align:center}
+/* 화면들 */
+.scr{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at 50% -10%,#1f4f8f 0%,#0b1424 60%);overflow-y:auto;padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 24px)}
+.scr.dim{background:rgba(5,9,18,.88);backdrop-filter:blur(3px)}
+.box{max-width:520px;margin:0 auto}
+h1{font-size:40px;margin:18px 0 2px;font-weight:900;letter-spacing:-1px;text-align:center}
+h1 span{color:#ff5a5a}
+h2{font-size:22px;margin:6px 0 12px}
+.tag{text-align:center;opacity:.8;margin-bottom:20px;font-size:14px}
+.mbtn{display:block;width:100%;padding:15px;margin:9px 0;border-radius:14px;font-size:17px;font-weight:800;background:linear-gradient(180deg,#2a3f6e,#1b2a4d);border:1px solid rgba(255,255,255,.14);text-align:left}
+.mbtn small{display:block;font-size:12px;font-weight:600;opacity:.7;margin-top:2px}
+.mbtn.pri{background:linear-gradient(180deg,#ff6a4d,#d02c3c);border:0}
+.mbtn.blue{background:linear-gradient(180deg,#3a8dff,#1f56c9);border:0}
+.lbl{font-size:13px;font-weight:700;opacity:.8;margin:14px 0 6px}
+.teams{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tbtn{padding:10px 4px;border-radius:11px;background:rgba(255,255,255,.06);border:2px solid transparent;font-weight:800;font-size:13px;line-height:1.2}
+.tbtn i{display:block;height:6px;border-radius:3px;margin:0 auto 6px;width:60%}
+.tbtn small{display:block;font-size:10px;opacity:.7;font-weight:600;margin-top:2px}
+.tbtn.sel{border-color:#fff;background:rgba(255,255,255,.14)}
+.seg{display:flex;gap:6px}.seg button{flex:1;padding:10px 4px;border-radius:10px;background:rgba(255,255,255,.07);font-weight:700;font-size:14px;border:2px solid transparent}
+.seg button.sel{border-color:#fff;background:rgba(255,255,255,.16)}
+input.txt{width:100%;padding:13px;border-radius:11px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.3);color:#fff;font-size:18px;font-weight:800;letter-spacing:3px;text-align:center;font-family:inherit;user-select:text;-webkit-user-select:text}
+input.nick{letter-spacing:0;font-size:15px;font-weight:700}
+.code{font-size:46px;font-weight:900;letter-spacing:8px;text-align:center;margin:10px 0;color:#ffd23f}
+.note{font-size:13px;opacity:.75;line-height:1.55}
+.help li{margin:6px 0;line-height:1.5;font-size:14px}
+table.ls{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;background:rgba(0,0,0,.25);border-radius:10px;overflow:hidden}
+table.ls td,table.ls th{padding:6px 3px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+table.ls th{opacity:.7;font-weight:700}
+table.ls td.t{text-align:left;padding-left:8px;font-weight:800;white-space:nowrap}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);background:rgba(0,0,0,.85);padding:9px 14px;border-radius:10px;font-size:13px;z-index:40;pointer-events:none;transition:opacity .3s;opacity:0;max-width:86vw;text-align:center}
+#netw{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 92px);transform:translateX(-50%);background:#b3261e;padding:6px 12px;border-radius:8px;font-size:12px;z-index:8;font-weight:700}
+.plist{display:flex;flex-direction:column;gap:6px}
+.plist button{text-align:left;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.07);font-size:14px;font-weight:700;border:2px solid transparent}
+.plist button.cur{border-color:#ffd23f}
+.plist small{opacity:.7;font-weight:600}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div id="hud" class="hide">
+  <div id="sb">
+    <div class="tm"><i id="c0"></i><span id="n0">원정</span><b id="s0">0</b></div>
+    <div class="tm"><i id="c1"></i><span id="n1">홈</span><b id="s1">0</b></div>
+    <div class="inn" id="inn">1회초</div>
+    <div class="cnt">
+      <span>B <i class="dot b"></i><i class="dot b"></i><i class="dot b"></i></span>
+      <span>S <i class="dot s"></i><i class="dot s"></i></span>
+      <span>O <i class="dot o"></i><i class="dot o"></i></span>
+    </div>
+    <div class="bases"><i id="b2" style="left:14px;top:3px"></i><i id="b3" style="left:3px;top:14px"></i><i id="b1" style="left:25px;top:14px"></i></div>
+  </div>
+  <div id="info"><div id="iBat"></div><div id="iPit"></div></div>
+  <div id="pinfo" class="hide"></div>
+  <div id="chartWrap" class="hide"><canvas id="chart" width="300" height="300"></canvas><div class="t">측면(위) · 위에서(아래) — 점선: 회전 없는 공</div></div>
+  <div id="ban" class="hide"><div class="big" id="banBig"></div><div class="sub" id="banSub"></div></div>
+  <div id="netw" class="hide">상대방 연결이 불안정해요… 기다리는 중</div>
+  <div id="topbtns"><button id="bChart" title="궤적 분석">📈</button><button id="bMenu" title="메뉴">⏸</button></div>
+  <div id="ctl">
+    <div id="hint"></div>
+    <div class="row" id="rowTop"></div>
+    <div id="bottom">
+      <div class="grow">
+        <div class="row" id="rowBot"></div>
+      </div>
+      <button id="act">투구</button>
+    </div>
+  </div>
+</div>
+
+<!-- 메인 메뉴 -->
+<div class="scr" id="sMain">
+  <div class="box">
+    <h1>THE <span>PITCH</span> ⚾</h1>
+    <div class="tag">리얼 변화구 물리 야구 — 회전축·회전수로 휘는 진짜 브레이킹볼</div>
+    <div class="lbl">닉네임</div>
+    <input class="txt nick" id="nick" maxlength="10" placeholder="닉네임">
+    <button class="mbtn pri" data-go="sCpu">🤖 CPU 대전<small>원하는 팀으로 컴퓨터와 한 경기</small></button>
+    <button class="mbtn blue" data-go="sOnline">👥 친구와 온라인 대전<small>방 코드 / 링크로 친구와 1:1</small></button>
+    <button class="mbtn" data-go="sBp">🏏 배팅 연습<small>CPU 투수 공을 계속 받아치기</small></button>
+    <button class="mbtn" data-go="sLab">🔬 투구 연구소<small>구종별 회전·무브먼트·궤적 분석</small></button>
+    <button class="mbtn" data-go="sHelp">📖 조작법</button>
+  </div>
+</div>
+
+<div class="scr hide" id="sCpu">
+  <div class="box">
+    <h2>🤖 CPU 대전</h2>
+    <div class="lbl">내 팀</div><div class="teams" id="tMy"></div>
+    <div class="lbl">상대 팀</div><div class="teams" id="tOpp"></div>
+    <div class="lbl">공격 순서</div><div class="seg" id="segSide"><button data-v="0" class="sel">선공 (원정)</button><button data-v="1">후공 (홈)</button></div>
+    <div class="lbl">이닝</div><div class="seg" id="segInn"><button data-v="3" class="sel">3이닝</button><button data-v="5">5이닝</button><button data-v="9">9이닝</button></div>
+    <div class="lbl">난이도</div><div class="seg" id="segDiff"><button data-v="0">루키</button><button data-v="1" class="sel">프로</button><button data-v="2">레전드</button></div>
+    <button class="mbtn pri" id="goCpu" style="margin-top:18px;text-align:center">플레이볼!</button>
+    <button class="mbtn" data-go="sMain" style="text-align:center">← 뒤로</button>
+  </div>
+</div>
+
+<div class="scr hide" id="sOnline">
+  <div class="box">
+    <h2>👥 친구와 온라인 대전</h2>
+    <div class="lbl">내 팀</div><div class="teams" id="tNet"></div>
+    <div class="lbl">이닝 (방장 설정)</div><div class="seg" id="segNInn"><button data-v="3" class="sel">3이닝</button><button data-v="5">5이닝</button><button data-v="9">9이닝</button></div>
+    <button class="mbtn pri" id="goHost" style="margin-top:16px;text-align:center">방 만들기</button>
+    <div class="lbl">또는 친구 방 코드 입력</div>
+    <input class="txt" id="codeIn" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters">
+    <button class="mbtn blue" id="goJoin" style="text-align:center">방 참가하기</button>
+    <p class="note">방장은 홈팀(후공), 참가자는 원정팀(선공)이 됩니다. 수비할 땐 내가 던지고, 공격할 땐 내가 칩니다.</p>
+    <button class="mbtn" data-go="sMain" style="text-align:center">← 뒤로</button>
+  </div>
+</div>
+
+<div class="scr hide" id="sLobby">
+  <div class="box" style="text-align:center">
+    <h2 id="lobT">방 만드는 중</h2>
+    <div class="code" id="lobCode">····</div>
+    <div class="note" id="lobMsg"><span class="spin"></span>서버 연결 중…</div>
+    <button class="mbtn blue" id="lobShare" style="text-align:center;margin-top:18px">🔗 초대 링크 보내기</button>
+    <button class="mbtn" id="lobBack" style="text-align:center">취소</button>
+  </div>
+</div>
+
+<div class="scr hide" id="sBp">
+  <div class="box">
+    <h2>🏏 배팅 연습</h2>
+    <div class="lbl">내 타자 팀</div><div class="teams" id="tBpMy"></div>
+    <div class="lbl">상대 투수 팀</div><div class="teams" id="tBpOpp"></div>
+    <div class="lbl">투수</div><div class="seg" id="segBpP"><button data-v="0" class="sel">선발</button><button data-v="1">불펜</button><button data-v="2">마무리</button></div>
+    <button class="mbtn pri" id="goBp" style="margin-top:16px;text-align:center">시작</button>
+    <button class="mbtn" data-go="sMain" style="text-align:center">← 뒤로</button>
+  </div>
+</div>
+
+<div class="scr hide" id="sLab">
+  <div class="box">
+    <h2>🔬 투구 연구소</h2>
+    <p class="note">원하는 투수로 직접 던지면서 구종별 <b>구속·회전수·회전효율·무브먼트</b>와 궤적을 확인해요. 회전이 없을 때의 궤적(점선)과 비교하면 공이 얼마나 휘는지 보여요.</p>
+    <div class="lbl">팀</div><div class="teams" id="tLab"></div>
+    <button class="mbtn pri" id="goLab" style="margin-top:16px;text-align:center">연구소 입장</button>
+    <button class="mbtn" data-go="sMain" style="text-align:center">← 뒤로</button>
+  </div>
+</div>
+
+<div class="scr hide" id="sHelp">
+  <div class="box">
+    <h2>📖 조작법</h2>
+    <div class="lbl">⚾ 투구 (수비)</div>
+    <ul class="help">
+      <li>아래에서 <b>구종</b>을 고르고, 스트라이크존 주변을 <b>터치해서 코스</b>를 정해요.</li>
+      <li><b>투구</b> 버튼 → 원이 줄어들어요. 안쪽 원과 겹칠 때 <b>탭</b>! PERFECT면 제구·구속·회전이 좋아지고 BAD면 실투가 나와요.</li>
+      <li>투구 수가 늘면 체력이 떨어져 구속·제구가 나빠져요. ⏸ 메뉴에서 <b>투수 교체</b>.</li>
+    </ul>
+    <div class="lbl">🏏 타격 (공격)</div>
+    <ul class="help">
+      <li>화면을 <b>드래그</b>해서 타격 원(커서)을 공이 올 곳으로 옮기고, <b>탭(또는 스윙 버튼)</b>으로 스윙.</li>
+      <li>공이 커서 <b>중심보다 위</b>에 맞으면 뜬공, <b>아래</b>면 땅볼. 살짝 아래를 노리면 홈런 각도!</li>
+      <li>빨리 치면 당겨치고, 늦으면 밀어쳐요. 스윙 판정은 커서를 누른 순간 위치로 결정돼요.</li>
+      <li><b>구종 예측</b>: 맞히면 타격 원이 커지고 타이밍 판정이 넉넉해져요. 틀리면 작아져요.</li>
+    </ul>
+    <div class="lbl">⌨️ PC</div>
+    <ul class="help"><li>마우스로 커서/코스, 클릭 = 스윙·투구 · 스페이스 = 스윙/투구 · 1~5 = 구종</li></ul>
+    <div class="lbl">🌀 변화구 원리</div>
+    <ul class="help"><li>모든 공은 실제 물리(중력·공기저항·마그누스 힘)로 날아가요. 구종마다 회전수·회전축·회전효율(자이로 비율)이 다르고, 투심·체인지업·포크는 실밥 효과(SSW)가 추가되며, 너클볼은 회전이 거의 없어 불규칙하게 흔들려요. 좌투수는 휘는 방향이 반대!</li></ul>
+    <button class="mbtn" data-go="sMain" style="text-align:center">← 뒤로</button>
+  </div>
+</div>
+
+<div class="scr dim hide" id="sPause">
+  <div class="box">
+    <h2>⏸ 일시정지</h2>
+    <div id="pauseSub"></div>
+    <button class="mbtn" id="pResume" style="text-align:center">계속하기</button>
+    <button class="mbtn" id="bSound" style="text-align:center">🔊 소리 켜짐</button>
+    <button class="mbtn" id="pQuit" style="text-align:center">메인으로 나가기</button>
+  </div>
+</div>
+
+<div class="scr dim hide" id="sOver">
+  <div class="box" style="text-align:center">
+    <h2 id="ovT">경기 종료</h2>
+    <div id="ovS" style="font-size:20px;font-weight:800"></div>
+    <div id="ovL"></div>
+    <div id="ovX" class="note"></div>
+    <button class="mbtn pri" id="ovAgain" style="text-align:center">다시 하기</button>
+    <button class="mbtn" id="ovMain" style="text-align:center">메인으로</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="physics.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
