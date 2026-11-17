@@ -29,7 +29,7 @@ button{font-family:inherit;cursor:pointer;border:0;color:#fff}
 #info .nm{font-weight:800;font-size:13px}
 #info .st{opacity:.8}
 .bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:3px;overflow:hidden}.bar i{display:block;height:100%;background:#3fe07a}
-#pinfo{position:fixed;left:8px;top:calc(env(safe-area-inset-top) + 124px);z-index:4;background:rgba(8,14,28,.78);border-radius:8px;padding:6px 9px;font-size:12px;line-height:1.45;pointer-events:none;border-left:4px solid #fff;max-width:54vw}
+#pinfo{position:fixed;left:8px;top:calc(env(safe-area-inset-top) + 124px);z-index:4;background:rgba(8,14,28,.78);border-radius:8px;padding:6px 9px;font-size:12px;line-height:1.45;pointer-events:none;border-left:4px solid #fff;max-width:calc(100vw - 185px)}
 #pinfo b{font-size:14px}
 #ban{position:fixed;left:0;right:0;top:27%;text-align:center;z-index:6;pointer-events:none;transition:opacity .2s}
 #ban .big{font-size:42px;font-weight:900;letter-spacing:-1px;text-shadow:0 4px 0 rgba(0,0,0,.35),0 0 24px rgba(0,0,0,.5);animation:pop .35s ease-out}
@@ -55,7 +55,7 @@ button{font-family:inherit;cursor:pointer;border:0;color:#fff}
 #topbtns{position:fixed;right:8px;top:calc(env(safe-area-inset-top) + 8px);z-index:7;display:flex;gap:6px}
 #topbtns button{width:34px;height:34px;border-radius:9px;background:rgba(8,14,28,.85);border:1px solid rgba(255,255,255,.18);font-size:15px}
 #chartWrap{position:fixed;right:8px;top:calc(env(safe-area-inset-top) + 124px);z-index:4;background:rgba(8,14,28,.82);border-radius:10px;padding:4px;pointer-events:none}
-#chartWrap .t{font-size:10px;opacity:.8;text-align:center}
+#chartWrap .t{font-size:10px;opacity:.8;text-align:center;max-width:150px}
 /* 화면들 */
 .scr{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at 50% -10%,#1f4f8f 0%,#0b1424 60%);overflow-y:auto;padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 24px)}
 .scr.dim{background:rgba(5,9,18,.88);backdrop-filter:blur(3px)}
@@ -208,6 +208,7 @@ table.ls td.t{text-align:left;padding-left:8px;font-weight:800;white-space:nowra
     <ul class="help">
       <li>아래에서 <b>구종</b>을 고르고, 스트라이크존 주변을 <b>터치해서 코스</b>를 정해요.</li>
       <li><b>투구</b> 버튼 → 원이 줄어들어요. 안쪽 원과 겹칠 때 <b>탭</b>! PERFECT면 제구·구속·회전이 좋아지고 BAD면 실투가 나와요.</li>
+      <li>공은 기본으로 <b>실제보다 느리게(보통)</b> 보여줘요. 구속·회전·궤적 계산은 그대로고 화면 재생 속도만 느린 거예요. ⏸ 메뉴에서 바꿀 수 있어요.</li>
       <li>투구 수가 늘면 체력이 떨어져 구속·제구가 나빠져요. ⏸ 메뉴에서 <b>투수 교체</b>.</li>
     </ul>
     <div class="lbl">🏏 타격 (공격)</div>
@@ -230,6 +231,7 @@ table.ls td.t{text-align:left;padding-left:8px;font-weight:800;white-space:nowra
     <h2>⏸ 일시정지</h2>
     <div id="pauseSub"></div>
     <button class="mbtn" id="pResume" style="text-align:center">계속하기</button>
+    <div class="lbl">투구 속도 (화면에서 공이 날아오는 빠르기)</div><div class="seg" id="segSpd"><button data-v="0.45">느리게</button><button data-v="0.6">보통</button><button data-v="0.8">빠르게</button><button data-v="1">리얼</button></div><div style="height:8px"></div>
     <button class="mbtn" id="bSound" style="text-align:center">🔊 소리 켜짐</button>
     <button class="mbtn" id="pQuit" style="text-align:center">메인으로 나가기</button>
   </div>

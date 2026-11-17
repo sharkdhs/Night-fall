@@ -179,53 +179,133 @@ function drawWorld(c) {
   for (const a of [-45, 0, 45]) { const r = T.fenceD(a) - 0.3, t = a * Math.PI / 180, p = prj(c, [r * Math.sin(t), r * Math.cos(t), 1.6]); if (p && p[2] < 160) { g.fillStyle = 'rgba(255,255,255,.75)'; g.font = `bold ${Math.max(8, c.F * 1.3 / p[2])}px sans-serif`; g.textAlign = 'center'; g.fillText(Math.round(r + 0.3) + 'm', p[0], p[1]); } }
 }
 
-function figure(c, x, y, col, col2, opt) {
-  opt = opt || {};
-  const b = prj(c, [x, y, 0]), t = prj(c, [x, y, 1.82 * (opt.sc || 1)]); if (!b || !t) return;
-  const h = b[1] - t[1]; if (h < 1.5) return;
-  const w = h * 0.26;
-  g.save(); g.globalAlpha = opt.alpha == null ? 1 : opt.alpha;
-  g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(b[0], b[1], w * 0.9, w * 0.25, 0, 0, 6.3); g.fill();
-  g.strokeStyle = '#e9e9e9'; g.lineCap = 'round'; g.lineWidth = Math.max(1, w * 0.42);
-  g.beginPath(); g.moveTo(b[0] - w * .3, b[1]); g.lineTo(b[0] - w * .15, b[1] - h * .48); g.moveTo(b[0] + w * .3, b[1]); g.lineTo(b[0] + w * .15, b[1] - h * .48); g.stroke();
-  g.fillStyle = col; g.fillRect(b[0] - w / 2, b[1] - h * .82, w, h * .38);
-  g.strokeStyle = col; g.beginPath(); g.moveTo(b[0] - w * .45, b[1] - h * .78); g.lineTo(b[0] - w * .75, b[1] - h * .5); g.moveTo(b[0] + w * .45, b[1] - h * .78); g.lineTo(b[0] + w * .75, b[1] - h * .5); g.stroke();
-  g.fillStyle = '#e6b48a'; g.beginPath(); g.arc(b[0], b[1] - h * .9, w * .38, 0, 6.3); g.fill();
-  g.fillStyle = col2 || col; g.fillRect(b[0] - w * .42, b[1] - h * 1.0, w * .84, h * .09);
-  if (opt.label && h > 10) { g.fillStyle = '#fff'; g.font = 'bold 10px sans-serif'; g.textAlign = 'center'; g.fillText(opt.label, b[0], t[1] - 4); }
+// ================= 선수 렌더링 (관절 포즈 + 유니폼) =================
+const BASEP = { hd: [0, .915], nk: [0, .83], hp: [0, .53], sL: [-.115, .8], sR: [.115, .8], eL: [-.15, .655], eR: [.15, .655], hL: [-.15, .51], hR: [.15, .51], pL: [-.06, .52], pR: [.06, .52], kL: [-.068, .285], kR: [.068, .285], aL: [-.075, .04], aR: [.075, .04] };
+const cpP = p => { const o = {}; for (const k in p) o[k] = p[k].slice(); return o; };
+const mixP = (a, b, t) => { t = t * t * (3 - 2 * t); const o = {}; for (const k in a) o[k] = [a[k][0] + (b[k][0] - a[k][0]) * t, a[k][1] + (b[k][1] - a[k][1]) * t]; return o; };
+const mirP = p => { const o = {}; for (const k in p) { const e = k[k.length - 1], nk = k.length === 2 && (e === 'L' || e === 'R') ? k[0] + (e === 'L' ? 'R' : 'L') : k; o[nk] = [-p[k][0], p[k][1]]; } return o; };
+const kf = (base, ch) => { const o = cpP(base); for (const k in ch) o[k] = ch[k]; return o; };
+function keyAnim(keys, t) { // keys: [[t, pose], ...]
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) if (t <= keys[i][0]) return mixP(keys[i - 1][1], keys[i][1], (t - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0]));
+  return keys[keys.length - 1][1];
+}
+const PK = (function () {
+  const set = kf(BASEP, { hL: [-.03, .66], hR: [.03, .66], eL: [-.13, .68], eR: [.13, .68] });
+  const lift = kf(set, { kL: [-.05, .5], aL: [-.07, .31], pL: [-.05, .53], hL: [-.01, .71], hR: [.03, .71], eL: [-.12, .71], eR: [.12, .71] });
+  const cock = kf(BASEP, { hp: [0, .46], pL: [-.06, .46], pR: [.06, .46], kL: [-.17, .24], aL: [-.23, -.03], kR: [.1, .24], aR: [.11, .03], nk: [-.01, .76], hd: [-.015, .845], sL: [-.125, .74], sR: [.105, .75], hR: [.34, .87], eR: [.27, .75], hL: [-.32, .68], eL: [-.22, .72] });
+  const rel = kf(BASEP, { hp: [-.02, .45], pL: [-.08, .45], pR: [.04, .45], kL: [-.17, .24], aL: [-.23, -.03], kR: [.06, .23], aR: [.1, .06], nk: [-.04, .72], hd: [-.05, .8], sL: [-.15, .7], sR: [.07, .73], hR: [.07, .93], eR: [.16, .82], hL: [-.2, .56], eL: [-.21, .65] });
+  const fol = kf(BASEP, { hp: [-.04, .43], pL: [-.1, .43], pR: [.02, .43], kL: [-.18, .23], aL: [-.23, -.03], kR: [.02, .31], aR: [.09, .2], nk: [-.07, .66], hd: [-.08, .74], sL: [-.17, .64], sR: [.03, .67], hR: [-.2, .35], eR: [-.06, .5], hL: [-.18, .52], eL: [-.21, .6] });
+  const bat0 = kf(BASEP, { aL: [-.17, .03], aR: [.15, .03], kL: [-.13, .27], kR: [.11, .27], pL: [-.065, .5], pR: [.06, .5], hp: [0, .5], nk: [-.01, .8], hd: [-.01, .89], sL: [-.12, .78], sR: [.11, .79], hL: [-.12, .8], hR: [-.09, .82], eL: [-.21, .7], eR: [.0, .68] });
+  const bat1 = kf(bat0, { pL: [-.04, .48], pR: [.075, .48], hp: [.015, .48], kL: [-.11, .25], aL: [-.17, .05], kR: [.14, .26], aR: [.17, .03], nk: [.02, .78], hd: [.025, .87], sL: [-.09, .77], sR: [.13, .77], hL: [.14, .62], hR: [.17, .63], eL: [.03, .66], eR: [.14, .7] });
+  const bat2 = kf(bat1, { hL: [.09, .87], hR: [.11, .89], eL: [.18, .78], eR: [-.02, .76], nk: [.04, .79], hd: [.05, .88], aL: [-.14, .1], kL: [-.09, .28] });
+  const crouch = kf(BASEP, { hp: [0, .3], pL: [-.07, .3], pR: [.07, .3], kL: [-.18, .32], kR: [.18, .32], aL: [-.12, .02], aR: [.12, .02], nk: [0, .58], hd: [0, .665], sL: [-.12, .56], sR: [.12, .56], eL: [-.19, .45], eR: [.16, .44], hL: [-.09, .44], hR: [.12, .36] });
+  return { set, lift, cock, rel, fol, bat0, bat1, bat2, crouch };
+})();
+const POSE = {
+  stand: () => cpP(BASEP),
+  ready(c) {
+    const p = cpP(BASEP), d = c * 0.1;
+    for (const k of ['hd', 'nk', 'sL', 'sR']) p[k][1] -= d * 1.3;
+    p.hp[1] -= d; p.pL[1] -= d; p.pR[1] -= d;
+    p.kL = [-.1 - .05 * c, .27 - .03 * c]; p.kR = [.1 + .05 * c, .27 - .03 * c]; p.aL = [-.1 - .06 * c, .04]; p.aR = [.1 + .06 * c, .04];
+    p.hL = [-.1 - .02 * c, p.hp[1] - .13 * c - .02]; p.hR = [.1 + .02 * c, p.hp[1] - .13 * c - .02];
+    p.eL = [-.16, (p.sL[1] + p.hL[1]) / 2 + .02]; p.eR = [.16, (p.sR[1] + p.hR[1]) / 2 + .02];
+    return p;
+  },
+  run(ph) {
+    const p = cpP(BASEP), s = Math.sin(ph), s2 = -s, bob = Math.abs(Math.sin(ph)) * .025;
+    for (const k in p) p[k][1] += bob - .02;
+    p.kL = [-.07, .3 + .13 * Math.max(0, s)]; p.aL = [-.075, .05 + .2 * Math.max(0, s)];
+    p.kR = [.07, .3 + .13 * Math.max(0, s2)]; p.aR = [.075, .05 + .2 * Math.max(0, s2)];
+    p.eL = [-.18, .65]; p.hL = [-.15, .6 + .13 * s2]; p.eR = [.18, .65]; p.hR = [.15, .6 + .13 * s];
+    return p;
+  },
+  pitch(ph, ts) { const p = keyAnim([[0, PK.set], [.45, PK.lift], [.8, PK.cock], [1.0, PK.rel], [1.35, PK.fol]], ph); return ts < 0 ? mirP(p) : p; },
+  bat(e, ps) { const p = e <= 1 ? mixP(PK.bat0, PK.bat1, e) : mixP(PK.bat1, PK.bat2, Math.min(1, e - 1)); return ps < 0 ? mirP(p) : p; },
+  crouch: () => cpP(PK.crouch)
+};
+const numOf = name => { let h = 7; for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) % 997; return h % 98 + 1; };
+function lookOf(tm, home, ex) { return Object.assign({ jer: tm.c1, trim: tm.c2, pants: home ? '#f2f2f0' : '#a7aeb9', sock: tm.c1, cap: tm.c1, view: 'front', ab: tm.ab }, ex || {}); }
+function drawPerson(ox, oy, h, P, L) {
+  if (h < 3) return;
+  const S = j => [ox + j[0] * h, oy - j[1] * h], lw = Math.max(0.7, h * 0.008), det = h > 26, ol = 'rgba(15,18,28,.6)';
+  const limb = (a, b, w, col) => { const A = S(a), B = S(b); if (det) { g.strokeStyle = ol; g.lineWidth = w * h + lw * 2; g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); } g.strokeStyle = col; g.lineWidth = w * h; g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); };
+  const mid = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  const skin = '#dfa982', under = '#1d2230', back = L.view === 'back';
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  g.fillStyle = 'rgba(0,0,0,.28)'; g.beginPath(); g.ellipse(ox, oy, h * .2, h * .045, 0, 0, 6.3); g.fill();
+  // 다리
+  for (const sd of ['L', 'R']) {
+    const pp = P['p' + sd], kk = P['k' + sd], aa = P['a' + sd];
+    limb(pp, kk, .092, L.pants); limb(kk, mid(kk, aa, .45), .078, L.pants); limb(mid(kk, aa, .4), aa, .066, L.sock);
+    const A = S(aa); g.fillStyle = '#16181d'; g.beginPath(); g.ellipse(A[0], A[1] + h * .012, h * .05, h * .024, 0, 0, 6.3); g.fill();
+  }
+  // 몸통
+  const sL = S(P.sL), sR = S(P.sR), pL = S(P.pL), pR = S(P.pR), nk = S(P.nk), hp = S(P.hp), sx = h * .03;
+  const jg = g.createLinearGradient(sL[0], sL[1], pR[0], pR[1]); jg.addColorStop(0, L.jer); jg.addColorStop(1, shade(L.jer, -0.28));
+  g.fillStyle = jg; g.beginPath(); g.moveTo(sL[0] - sx, sL[1] + h * .005); g.quadraticCurveTo(nk[0], nk[1] - h * .03, sR[0] + sx, sR[1] + h * .005);
+  g.lineTo(pR[0] + h * .02, pR[1]); g.lineTo(pL[0] - h * .02, pL[1]); g.closePath(); g.fill();
+  if (det) { g.strokeStyle = ol; g.lineWidth = lw; g.stroke(); }
+  // 벨트
+  limb([P.pL[0] - .02, P.pL[1] + .005], [P.pR[0] + .02, P.pR[1] + .005], .028, '#15171c');
+  if (det) {
+    if (!back) { // 앞: 단추선 + 팀명
+      g.strokeStyle = L.trim; g.lineWidth = Math.max(1, h * .008); g.beginPath(); g.moveTo(nk[0], nk[1] + h * .02); g.lineTo(hp[0], hp[1] - h * .02); g.stroke();
+      if (h > 50 && L.ab) { g.fillStyle = L.trim; g.font = `900 ${Math.round(h * .055)}px sans-serif`; g.textAlign = 'center'; g.fillText(L.ab, (sL[0] + sR[0]) / 2, (sL[1] + pL[1]) / 2 - h * .02); }
+    } else if (L.num != null) { // 뒤: 이름 + 등번호
+      const cx0 = (sL[0] + sR[0] + pL[0] + pR[0]) / 4, cy0 = (sL[1] + pL[1]) / 2;
+      g.textAlign = 'center'; g.fillStyle = L.trim; g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = Math.max(1, h * .006);
+      g.font = `900 ${Math.round(h * .13)}px sans-serif`; g.strokeText(L.num, cx0, cy0 + h * .06); g.fillText(L.num, cx0, cy0 + h * .06);
+      if (h > 70 && L.name) { g.font = `800 ${Math.round(h * .038)}px sans-serif`; g.fillText(L.name, cx0, cy0 - h * .07); }
+    }
+    // 소매 트림
+  }
+  if (L.gear) { g.fillStyle = 'rgba(25,28,36,.92)'; g.beginPath(); g.moveTo(sL[0], sL[1]); g.lineTo(sR[0], sR[1]); g.lineTo(hp[0] + h * .06, hp[1]); g.lineTo(hp[0] - h * .06, hp[1]); g.closePath(); g.fill(); }
+  // 팔
+  for (const sd of ['L', 'R']) {
+    const ss = P['s' + sd], ee = P['e' + sd], hh = P['h' + sd];
+    limb(ss, ee, .07, L.jer); limb(mid(ss, ee, .55), ee, .06, under); limb(ee, hh, .056, under);
+    const H2 = S(hh);
+    if (L.glove === sd) { g.fillStyle = '#7b4a22'; g.beginPath(); g.ellipse(H2[0], H2[1], h * .052, h * .06, 0, 0, 6.3); g.fill(); if (det) { g.strokeStyle = '#3d220f'; g.lineWidth = lw; g.stroke(); } }
+    else { g.fillStyle = L.bgl ? '#f4f4f4' : skin; g.beginPath(); g.arc(H2[0], H2[1], h * .029, 0, 6.3); g.fill(); }
+  }
+  // 머리
+  limb(P.nk, mid(P.nk, P.hd, .6), .055, skin);
+  const hd = S(P.hd), hr = h * .06;
+  g.fillStyle = skin; g.beginPath(); g.ellipse(hd[0], hd[1], hr * .9, hr, 0, 0, 6.3); g.fill();
+  if (back) { g.fillStyle = '#1a1410'; g.beginPath(); g.ellipse(hd[0], hd[1] + hr * .1, hr * .88, hr * .8, 0, 0, 6.3); g.fill(); }
+  else if (h > 34) { g.fillStyle = '#1b1b1b'; g.fillRect(hd[0] - hr * .42, hd[1] + hr * .05, hr * .2, hr * .14); g.fillRect(hd[0] + hr * .22, hd[1] + hr * .05, hr * .2, hr * .14); }
+  if (L.mask) { g.strokeStyle = '#222'; g.lineWidth = Math.max(1, h * .01); g.strokeRect(hd[0] - hr * .7, hd[1] - hr * .2, hr * 1.4, hr * 1.1); }
+  if (L.helmet) {
+    const hg = g.createRadialGradient(hd[0] - hr * .4, hd[1] - hr * .7, hr * .1, hd[0], hd[1] - hr * .2, hr * 1.25);
+    hg.addColorStop(0, shade(L.cap, 0.35)); hg.addColorStop(1, shade(L.cap, -0.35));
+    g.fillStyle = hg; g.beginPath(); g.arc(hd[0], hd[1] - hr * .05, hr * 1.1, Math.PI * 1.02, Math.PI * 1.98); g.closePath(); g.fill();
+    if (L.flap) { g.beginPath(); g.ellipse(hd[0] + L.flap * hr * .75, hd[1] + hr * .15, hr * .45, hr * .55, 0, 0, 6.3); g.fill(); }
+    if (!back) { g.fillStyle = shade(L.cap, -0.45); g.fillRect(hd[0] - hr * 1.05, hd[1] - hr * .12, hr * 2.1, hr * .2); }
+  } else {
+    g.fillStyle = L.cap; g.beginPath(); g.arc(hd[0], hd[1] - hr * .12, hr * .98, Math.PI * 1.02, Math.PI * 1.98); g.closePath(); g.fill();
+    if (!back) { g.fillStyle = shade(L.cap, -0.35); g.beginPath(); g.ellipse(hd[0], hd[1] - hr * .12, hr * 1.05, hr * .22, 0, 0, 6.3); g.fill(); if (h > 40) { g.fillStyle = L.trim; g.font = `900 ${Math.round(hr * .7)}px sans-serif`; g.textAlign = 'center'; g.fillText((L.ab || '')[0] || '', hd[0], hd[1] - hr * .38); } }
+  }
   g.restore();
 }
-
-function drawPitcher(c, tm, P, ph) {
-  const m = P.hand === 'L' ? 1 : -1; // 포수 시점에서 던지는 팔 쪽 (우투 = 화면 왼쪽)
-  const x = 0.1 * m, b = prj(c, [x, 18.44, 0.25]), t = prj(c, [x, 18.44, 2.1]); if (!b || !t) return;
-  const h = b[1] - t[1], w = h * 0.26, ox = b[0], oy = b[1];
-  const P2 = (dx, dy) => [ox + dx * w * m, oy - dy * h];
-  let knee = 0, lean = 0, arm = 0;
-  if (ph < 0.5) knee = Math.sin(ph / 0.5 * Math.PI / 2);
-  else if (ph < 0.85) { knee = 1 - (ph - 0.5) / 0.35; lean = (ph - 0.5) / 0.35; arm = (ph - 0.5) / 0.35; }
-  else if (ph < 1.0) { lean = 1; arm = 1 + (ph - 0.85) / 0.15; }
-  else { lean = Math.max(0, 1 - (ph - 1) * 2); arm = 2 + Math.min(1, (ph - 1) * 3); }
-  const hipY = 0.5 - lean * 0.06, shY = 0.8 - lean * 0.1;
-  g.save(); g.lineCap = 'round';
-  g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(ox, oy, w, w * 0.25, 0, 0, 6.3); g.fill();
-  g.strokeStyle = '#ececec'; g.lineWidth = Math.max(1.5, w * .42);
-  const hp = P2(0, hipY), f1 = P2(-0.35, 0), k2 = P2(0.45, hipY - 0.18 + knee * 0.25), f2 = P2(0.5 + lean * 0.4, knee * 0.22);
-  g.beginPath(); g.moveTo(...f1); g.lineTo(...hp); g.moveTo(...hp); g.lineTo(...k2); g.lineTo(...f2); g.stroke();
-  const sh = P2(0, shY); g.fillStyle = tm.c1; g.beginPath(); g.moveTo(hp[0] - w * .5, hp[1]); g.lineTo(hp[0] + w * .5, hp[1]); g.lineTo(sh[0] + w * .55, sh[1]); g.lineTo(sh[0] - w * .55, sh[1]); g.closePath(); g.fill();
-  g.strokeStyle = tm.c1; g.lineWidth = Math.max(1.5, w * .36);
-  // 글러브 팔
-  const gl = arm < 1 ? P2(0.15 + arm * 0.4, shY - 0.1 + arm * 0.05) : P2(0.75, shY - 0.15 - (arm - 1) * 0.15);
-  g.beginPath(); g.moveTo(...P2(0.45, shY - 0.02)); g.lineTo(...gl); g.stroke(); g.fillStyle = '#6b3d1e'; g.beginPath(); g.arc(gl[0], gl[1], w * .3, 0, 6.3); g.fill();
-  // 투구 팔
-  let hand;
-  if (arm < 1) hand = arm < 0.01 ? P2(0.1, shY - 0.12) : P2(-0.2 - arm * 0.7, shY - 0.1 + arm * 0.3);
-  else if (arm < 2) { const a = (arm - 1); hand = P2(-0.9 + a * 0.9, shY + 0.25 - a * 0.05); }
-  else { const a = arm - 2; hand = P2(0.1 + a * 0.6, shY - 0.1 - a * 0.35); }
-  g.beginPath(); g.moveTo(...P2(-0.45, shY - 0.02)); g.lineTo(...hand); g.stroke();
-  g.fillStyle = '#e6b48a'; g.beginPath(); g.arc(...P2(0, shY + 0.11), w * .38, 0, 6.3); g.fill();
-  g.fillStyle = tm.c2; g.fillRect(...P2(-0.45, shY + 0.21), w * .9, h * .05);
-  g.restore();
+function shade(hex, k) { // k>0 밝게, k<0 어둡게
+  let c = hex.replace('#', ''); if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const n = parseInt(c, 16); let r = n >> 16 & 255, gg = n >> 8 & 255, b = n & 255;
+  const f = v => Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k));
+  return `rgb(${f(r)},${f(gg)},${f(b)})`;
+}
+function personAt(c, x, y, pose, look, opt) {
+  opt = opt || {};
+  const b = prj(c, [x, y, 0]), t = prj(c, [x, y, 1.85 * (opt.sc || 1)]); if (!b || !t) return;
+  const h = b[1] - t[1]; if (h < 2.5 || b[0] < -h || b[0] > W + h) return;
+  drawPerson(b[0], b[1], h, pose, look);
+  if (opt.label && h > 8) { g.font = '900 12px sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ff5252'; g.strokeStyle = 'rgba(0,0,0,.7)'; g.lineWidth = 3; g.strokeText(opt.label, b[0], t[1] - 4); g.fillText(opt.label, b[0], t[1] - 4); }
+}
+function drawPitcher(c, tm, home, P, ph) {
+  const m = P.hand === 'L' ? 1 : -1; // 던지는 팔이 화면 어느 쪽인지 (우투 = 왼쪽)
+  const b = prj(c, [0.05 * m, 18.44, 0.25]), t = prj(c, [0.05 * m, 18.44, 0.25 + 1.88]); if (!b || !t) return;
+  drawPerson(b[0], b[1], b[1] - t[1], POSE.pitch(ph, m), lookOf(tm, home, { glove: m < 0 ? 'R' : 'L' }));
 }
 
 function drawBall(c, p, r0) {
@@ -241,7 +321,7 @@ function drawBall(c, p, r0) {
 const G = {
   mode: null, st: null, teams: null, mySide: 0, diff: 1, phase: 'idle', pt: 0, pitch: null, swing: null, cpuSw: null,
   sel: null, aim: [0, 0.76], cur: [0, 0.76], gauge: null, guess: null, outcome: null, ev: null, play: null, playOff: 0,
-  marks: [], lastPitch: null, labTrail: [], camF: [0, 40], qPitch: null, pendRes: null, paused: false, showChart: false, bp: null, fx: [], lastAb: -1, lastHalf: 0, waitT: 0
+  tsc: LS.get('tp_spd', 0.6), marks: [], lastPitch: null, labTrail: [], camF: [0, 40], qPitch: null, pendRes: null, paused: false, showChart: false, bp: null, fx: [], lastAb: -1, lastHalf: 0, waitT: 0
 };
 const WIND = 0.95;
 const off = () => G.st.half, defn = () => 1 - G.st.half;
@@ -413,7 +493,7 @@ function toSelect() {
 // ================= 업데이트 =================
 function update(dt) {
   if (G.paused || G.phase === 'idle' || G.phase === 'over') return;
-  G.pt += dt;
+  G.pt += G.phase === 'flight' ? dt * G.tsc : dt;
   const r = roles();
   for (const f of G.fx) { f.t += dt; f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } G.fx = G.fx.filter(f => f.t < f.life);
   switch (G.phase) {
@@ -479,13 +559,14 @@ function renderPitchView() {
   drawWorld(c);
   // 야수
   const order = [7, 6, 8, 3, 5, 2, 4];
-  for (const i of order) { const f = T.FLD[i]; figure(c, f[1], f[2], dtm.c1, dtm.c2); }
+  const dHome = defn() === 1, crouchK = G.phase === 'windup' || G.phase === 'flight' ? 1 : 0.35;
+  for (const i of order) { const f = T.FLD[i]; personAt(c, f[1], f[2], POSE.ready(crouchK), lookOf(dtm, dHome, { glove: f[1] > 0 ? 'L' : 'R' })); }
   // 주자
-  for (let b = 0; b < 3; b++) if (st.bases[b] >= 0) { const B = T.BASES[b + 1]; figure(c, B[0] + (b === 1 ? 1.5 : b === 0 ? -1.2 : 1.2), B[1] - 0.8, otm.c1, otm.c2); }
+  for (let b = 0; b < 3; b++) if (st.bases[b] >= 0) { const B = T.BASES[b + 1]; personAt(c, B[0] + (b === 1 ? 1.5 : b === 0 ? -2.2 : 2.2), B[1] + (b === 1 ? -1 : 1.2), POSE.ready(0.4), lookOf(otm, !dHome, { helmet: true })); }
   // 투수
   const P = curPitcher();
   let ph = 0; if (G.phase === 'windup') ph = G.pt / WIND; else if (G.phase === 'flight') ph = 1 + G.pt; else if (G.phase === 'after') ph = 1.6;
-  drawPitcher(c, dtm, P, ph);
+  drawPitcher(c, dtm, dHome, P, ph);
   // 스트라이크존
   const zc = 'rgba(255,255,255,.75)';
   const zx = PH.ZX, zb = PH.ZB, zt = PH.ZT;
@@ -516,7 +597,7 @@ function renderPitchView() {
     const lp = G.lastPitch, q = prj(c, [lp.cross.x, -0.5, Math.max(0.15, lp.cross.z - 0.04)]); if (q) { const rr = c.F * 0.085 / q[2]; g.fillStyle = 'rgba(110,60,25,.85)'; g.beginPath(); g.arc(q[0], q[1], rr, 0, 6.3); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(q[0], q[1], Math.max(2, c.F * PH.R / q[2]), 0, 6.3); g.fill(); }
   }
   // 타자 (화면 공간 실루엣)
-  if (r.b !== 'none') drawBatter(c, curBatter(), otm);
+  if (r.b !== 'none') drawBatter(c, curBatter(), otm, !dHome);
   // 타격 커서
   if (r.b === 'me' && (G.phase === 'select' || G.phase === 'windup' || G.phase === 'flight' || G.phase === 'gauge')) {
     const b = curBatter(), gmul = G.guess ? 1.08 : 1, R = T.cursorR(b) * gmul;
@@ -560,41 +641,30 @@ function drawTraj(c, lp, alpha, withNs) {
   }
   g.restore();
 }
-function drawBatter(c, b, tm) {
-  const side = b.hand === 'L' ? 1 : -1;
+function drawBatter(c, b, tm, home) {
+  const side = b.hand === 'L' ? 1 : -1, ps = -side; // ps: 홈플레이트가 있는 화면 방향
   const zb = prj(c, [0, 0, PH.ZB]), zt = prj(c, [0, 0, PH.ZT]), ze = prj(c, [PH.ZX, 0, PH.ZB]);
   const zh = zb[1] - zt[1], zw = ze[0] - zb[0];
-  const h = zh * 2.0, w = h * 0.27;
-  let bx = zb[0] + side * (zw + w * 1.55), by = zb[1] + zh * 0.75;
-  if (side < 0) bx = Math.max(bx, w * 0.75); else bx = Math.min(bx, W - w * 0.75);
+  const h = zh * 2.15;
+  let bx = zb[0] + side * (zw + h * 0.36), by = zb[1] + zh * 0.8;
+  if (side < 0) bx = Math.max(bx, h * 0.2); else bx = Math.min(bx, W - h * 0.2);
   let sp = -1; if (G.swing && (G.phase === 'flight' || G.phase === 'after' || G.phase === 'play')) { const tSince = (G.phase === 'flight' ? G.pt : G.pitch.cross.t + 0.035 + G.pt) - G.swing.ts; sp = clamp(tSince / PH.SWING_T, 0, 2.2); }
-  const P = (dx, dy) => [bx + dx * w * -side, by - dy * h]; // dx>0 = 투수 반대(포수쪽) 방향
-  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
-  g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(bx, by, w * 1.1, w * 0.22, 0, 0, 6.3); g.fill();
-  const rot = sp < 0 ? 0 : Math.min(1, sp) ; // 몸통 회전
-  // 다리
-  g.strokeStyle = '#cfd3da'; g.lineWidth = w * 0.36;
-  const hip = P(0.05 * (1 - rot), 0.5);
-  g.beginPath(); g.moveTo(...P(-0.75 - rot * 0.1, 0.02)); g.lineTo(...P(-0.35, 0.27)); g.lineTo(...hip); g.stroke();
-  g.beginPath(); g.moveTo(...P(0.65, 0.02)); g.lineTo(...P(0.45 - rot * 0.1, 0.27)); g.lineTo(...hip); g.stroke();
-  // 몸통
-  const sh = P(0.1 - rot * 0.15, 0.8);
-  g.fillStyle = tm.c1; g.beginPath(); g.moveTo(hip[0] - w * 0.45, hip[1]); g.lineTo(hip[0] + w * 0.45, hip[1]); g.lineTo(sh[0] + w * (0.55 - rot * 0.15), sh[1]); g.lineTo(sh[0] - w * (0.55 - rot * 0.15), sh[1]); g.closePath(); g.fill();
-  g.fillStyle = 'rgba(255,255,255,.85)'; g.font = `900 ${Math.round(w * 0.5)}px sans-serif`; g.textAlign = 'center'; g.fillText(String(G.st ? G.st.ord[off()] + 1 : ''), (hip[0] + sh[0]) / 2, (hip[1] + sh[1]) / 2 + w * 0.15);
-  // 머리/헬멧
-  const hd = P(0.08 - rot * 0.1, 0.92);
-  g.fillStyle = '#d9a07a'; g.beginPath(); g.arc(hd[0], hd[1], w * 0.3, 0, 6.3); g.fill();
-  g.fillStyle = tm.c2 === '#2a2a2a' || tm.c2 === '#222' ? tm.c2 : '#151a26'; g.beginPath(); g.arc(hd[0], hd[1] - w * 0.06, w * 0.34, Math.PI, 0); g.fill(); g.fillRect(hd[0] - w * 0.36, hd[1] - w * 0.08, w * 0.72, w * 0.1);
-  // 팔 + 배트
-  let ang, hand;
-  const a0 = side < 0 ? -2.1 : -1.04, a1 = side < 0 ? 0.1 : Math.PI - 0.1;
-  if (sp < 0) { ang = a0; hand = P(0.55, 0.86); }
-  else { const k = Math.min(sp, 1), e = k * k * (3 - 2 * k); ang = a0 + (a1 - a0) * e; if (sp > 1) ang = a1 + (side < 0 ? 1 : -1) * Math.min(1.7, (sp - 1) * 2.2); hand = P(0.55 - e * 0.9, 0.86 - e * 0.18); }
-  g.strokeStyle = tm.c1; g.lineWidth = w * 0.24; g.beginPath(); g.moveTo(...P(0.3, 0.78)); g.lineTo(...hand); g.moveTo(...P(-0.25, 0.78)); g.lineTo(...hand); g.stroke();
-  const L = h * 0.5;
-  g.strokeStyle = '#c98f4e'; g.lineWidth = Math.max(4, w * 0.16); g.beginPath(); g.moveTo(hand[0], hand[1]); g.lineTo(hand[0] + Math.cos(ang) * L, hand[1] + Math.sin(ang) * L); g.stroke();
-  g.strokeStyle = '#e2b073'; g.lineWidth = Math.max(5, w * 0.2); g.beginPath(); g.moveTo(hand[0] + Math.cos(ang) * L * 0.55, hand[1] + Math.sin(ang) * L * 0.55); g.lineTo(hand[0] + Math.cos(ang) * L, hand[1] + Math.sin(ang) * L); g.stroke();
-  g.fillStyle = '#222'; g.beginPath(); g.arc(hand[0], hand[1], w * 0.13, 0, 6.3); g.fill();
+  const e = sp < 0 ? 0 : sp <= 1 ? sp : 1 + Math.min(1, (sp - 1) * 1.6);
+  const P = POSE.bat(e, ps);
+  drawPerson(bx, by, h, P, lookOf(tm, home, { view: 'back', helmet: true, flap: -ps, num: numOf(b.name), name: b.name, bgl: true }));
+  // 배트
+  const hx = bx + (P.hL[0] + P.hR[0]) / 2 * h, hy = by - (P.hL[1] + P.hR[1]) / 2 * h;
+  const a0 = ps > 0 ? -2.15 : -0.99, a1 = ps > 0 ? 0.08 : Math.PI - 0.08;
+  let ang;
+  if (sp < 0) ang = a0 + Math.sin(performance.now() / 260) * 0.05;
+  else { const k = Math.min(sp, 1), ee = k * k * (3 - 2 * k); ang = a0 + (a1 - a0) * ee; if (sp > 1) ang = a1 + (ps > 0 ? -1 : 1) * Math.min(2.4, (sp - 1) * 3); }
+  const L = h * 0.46, ex = hx + Math.cos(ang) * L, ey = hy + Math.sin(ang) * L;
+  g.save(); g.lineCap = 'round';
+  g.strokeStyle = 'rgba(15,18,28,.6)'; g.lineWidth = Math.max(5, h * 0.034); g.beginPath(); g.moveTo(hx, hy); g.lineTo(ex, ey); g.stroke();
+  const bg = g.createLinearGradient(hx, hy, ex, ey); bg.addColorStop(0, '#2b2018'); bg.addColorStop(0.35, '#8a5a2e'); bg.addColorStop(1, '#d9a764');
+  g.strokeStyle = bg; g.lineWidth = Math.max(3, h * 0.022); g.beginPath(); g.moveTo(hx, hy); g.lineTo(hx + Math.cos(ang) * L * 0.55, hy + Math.sin(ang) * L * 0.55); g.stroke();
+  g.lineWidth = Math.max(4, h * 0.03); g.beginPath(); g.moveTo(hx + Math.cos(ang) * L * 0.5, hy + Math.sin(ang) * L * 0.5); g.lineTo(ex, ey); g.stroke();
+  g.fillStyle = '#f4f4f4'; g.beginPath(); g.arc(hx, hy, h * 0.03, 0, 6.3); g.fill();
   g.restore();
 }
 
@@ -613,30 +683,40 @@ function renderField() {
   const k = 1 - Math.exp(-2.2 / 60);
   G.camF[0] += (ball[0] - G.camF[0]) * k * 1.6; G.camF[1] += (clamp(ball[1], 5, 120) - G.camF[1]) * k * 1.6;
   const fx = G.camF[0] * 0.6, fy = G.camF[1] * 0.62 + 12;
-  const F = 1.45 * Math.min(W, H * 0.9);
-  const c = mkCam([fx * 0.55, fy - 50, 30], [fx, fy, 0], F, W / 2, H * 0.55);
+  const F = 1.6 * Math.min(W, H * 0.9);
+  const c = mkCam([fx * 0.55, fy - 42, 24], [fx, fy, 0], F, W / 2, H * 0.55);
   drawWorld(c);
   // 낙구 지점
   if (pl.pts.length && !pl.hr) { const lp = pl.pts.find(p => p[0] > 0.2 && p[3] <= 0.02); if (lp && t > lp[0] - 1.5) { poly(c, circ(lp[1], lp[2], 1.2, 14, 0.02), 'rgba(255,210,63,.35)'); } }
   // 야수
-  const items = [];
-  for (let i = 0; i < 9; i++) {
+  const items = [], oHome = G.playOff === 1;
+  const fpos = (i, tt) => {
     const f = T.FLD[i]; let x = f[1], y = f[2];
-    if (i === pl.fielder && pl.fP) { const k2 = clamp((t - f[4]) / Math.max(0.05, pl.fT - f[4]), 0, 1); x = f[1] + (pl.fP[0] - f[1]) * k2; y = f[2] + (pl.fP[1] - f[2]) * k2; if (held) { x = pl.fP[0]; y = pl.fP[1]; } }
-    else if (i >= 6 || pl.hr) { const bg = T.posAt(pl.pts, Math.min(t, tEnd)); const k2 = Math.min(0.45, Math.max(0, t - 0.5) * 0.12); x += (bg[0] - x) * k2; y += (bg[1] - y) * k2; }
-    else if (pl.throwTo >= 1 && pl.throwTo <= 3 && (i === [0, 2, 3, 4][pl.throwTo] || (pl.throwTo === 2 && i === (pl.fielder === 5 ? 3 : 5)))) { const B = T.BASES[pl.throwTo], k2 = clamp(t / 1.4, 0, 1); x += (B[0] - x) * k2; y += (B[1] - y) * k2; }
-    items.push({ x, y, col: dtm.c1, c2: dtm.c2 });
+    if (i === pl.fielder && pl.fP) { const k2 = clamp((tt - f[4]) / Math.max(0.05, pl.fT - f[4]), 0, 1); x = f[1] + (pl.fP[0] - f[1]) * k2; y = f[2] + (pl.fP[1] - f[2]) * k2; }
+    else if (i >= 6 || pl.hr) { const bg = T.posAt(pl.pts, clamp(tt, 0, tEnd)); const k2 = Math.min(0.45, Math.max(0, tt - 0.5) * 0.12); x += (bg[0] - x) * k2; y += (bg[1] - y) * k2; }
+    else if (pl.throwTo >= 1 && pl.throwTo <= 3 && (i === [0, 2, 3, 4][pl.throwTo] || (pl.throwTo === 2 && i === (pl.fielder === 5 ? 3 : 5)))) { const B = T.BASES[pl.throwTo], k2 = clamp(tt / 1.4, 0, 1); x += (B[0] - x) * k2; y += (B[1] - y) * k2; }
+    return [x, y];
+  };
+  for (let i = 0; i < 9; i++) {
+    const p1 = fpos(i, t), p0 = fpos(i, t - 0.06), vy = (p1[1] - p0[1]) / 0.06, v = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) / 0.06;
+    let pose, view = 'front';
+    if (i === 1) { pose = POSE.crouch(); view = 'back'; }
+    else if (v > 0.8) { pose = POSE.run(t * 13 + i); view = vy > 0.3 ? 'back' : 'front'; }
+    else pose = i === 0 ? POSE.stand() : POSE.ready(0.5);
+    items.push({ x: p1[0], y: p1[1], pose, look: lookOf(dtm, !oHome, { view, glove: 'L', num: numOf(dtm.name + i), gear: i === 1, mask: i === 1, helmet: i === 1 }) });
   }
   // 주자
   const moving = new Set(pl.moves.map(m => m.f));
-  for (let b = 0; b < 3; b++) if (pl.pb && pl.pb[b] >= 0 && !moving.has(b + 1)) { const B = T.BASES[b + 1]; items.push({ x: B[0], y: B[1], col: otm.c1, c2: otm.c2 }); }
+  for (let b = 0; b < 3; b++) if (pl.pb && pl.pb[b] >= 0 && !moving.has(b + 1)) { const B = T.BASES[b + 1]; items.push({ x: B[0], y: B[1], pose: POSE.ready(0.4), look: lookOf(otm, oHome, { helmet: true }) }); }
   for (const m of pl.moves) {
     if (m.t === -1 && t > m.st + m.dur + 0.4) continue;
     if (m.t === 4 && t > m.st + m.dur + 0.3) continue;
-    const p = runnerPos(m, t); items.push({ x: p[0], y: p[1], col: otm.c1, c2: otm.c2, out: m.t === -1 && t > m.st + m.dur * 0.9 });
+    const p = runnerPos(m, t), q = runnerPos(m, t - 0.06), mv = Math.hypot(p[0] - q[0], p[1] - q[1]) > 0.02;
+    const nm = otm.bats[m.r] ? otm.bats[m.r].name : '';
+    items.push({ x: p[0], y: p[1], pose: mv ? POSE.run(t * 14 + m.f) : POSE.ready(0.3), look: lookOf(otm, oHome, { helmet: true, view: mv && p[1] - q[1] > -0.01 ? 'back' : 'front', num: numOf(nm), name: nm, bgl: true }), out: m.t === -1 && t > m.st + m.dur * 0.9 });
   }
   items.sort((a, b) => Math.hypot(b.x - c.eye[0], b.y - c.eye[1]) - Math.hypot(a.x - c.eye[0], a.y - c.eye[1]));
-  for (const it of items) { figure(c, it.x, it.y, it.col, it.c2, { label: it.out ? 'OUT' : null, sc: 1.7 }); }
+  for (const it of items) personAt(c, it.x, it.y, it.pose, it.look, { label: it.out ? 'OUT' : null, sc: 1.6 });
   drawBall(c, ball, 3.2);
   // 정보
   g.font = 'bold 13px sans-serif'; g.textAlign = 'left'; g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(8, H - 200, 175, 54);
@@ -852,6 +932,8 @@ function openPause() {
 }
 function closePause() { G.paused = false; hideScreens(); }
 $('pResume').onclick = closePause;
+function spdSeg() { document.querySelectorAll('#segSpd button').forEach(b => { b.classList.toggle('sel', Math.abs(+b.dataset.v - G.tsc) < 0.01); b.onclick = () => { G.tsc = +b.dataset.v; LS.set('tp_spd', G.tsc); spdSeg(); }; }); }
+spdSeg();
 $('pQuit').onclick = () => { if (G.mode === 'online') { NET.send('bye', {}); NET.close(); } quitToMain(); };
 function quitToMain() { G.phase = 'idle'; G.st = null; G.paused = false; $('hud').classList.add('hide'); $('bChart').classList.remove('hide'); setBanner(null); show('sMain'); }
 function gameOver() {
